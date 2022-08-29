@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SdkService } from './sdk.service';
+import { SmartNodeRestService } from './smart-node-rest.service';
 
-describe('SdkService', () => {
-  let service: SdkService;
+describe('SmartNodeRestService', () => {
+  let service: SmartNodeRestService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(SdkService);
+    service = TestBed.inject(SmartNodeRestService);
   });
 
   it('should be created', () => {

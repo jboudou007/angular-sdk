@@ -1,11 +1,38 @@
 {
-  "name": "sdk",
-  "version": "0.0.1",
+  "name": "@hsuite/angular-sdk",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HbarSuite/angular-sdk.git"
+  },
+  "keywords": [
+    "hsuite",
+    "smart-node",
+    "nestjs-hedera",
+    "hsuite-network",
+    "hedera",
+    "dex",
+    "angular-sdk"
+  ],
+  "author": "HSuite",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HbarSuite/angular-sdk/issues"
+  },
   "peerDependencies": {
     "@angular/common": "^14.0.0",
     "@angular/core": "^14.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@capacitor/storage": "^1.2.5",
+    "@hashgraph/sdk": "^2.18.0",
+    "@types/lodash": "^4.14.184",
+    "axios": "^0.27.2",
+    "decimal.js": "^10.4.0",
+    "hashconnect": "^0.2.2",
+    "ngx-socket-io": "^4.3.0"
   }
 }
