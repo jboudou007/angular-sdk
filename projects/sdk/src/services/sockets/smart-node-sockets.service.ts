@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, Subscriber } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { SmartNodeSocket } from './smart-socket/smart-socket.class';
 import { Node } from '../network/interfaces/node.interface';
 import * as lodash from 'lodash';

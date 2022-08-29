@@ -5,13 +5,15 @@ import { SmartNodeHederaService } from '../services/hedera/smart-node-hedera.ser
 import { SmartNodeNetworkService } from '../services/network/smart-node-network.service';
 import { SmartNodeRestService } from '../services/rest/smart-node-rest.service';
 import { SmartNodeSocketsService } from '../services/sockets/smart-node-sockets.service';
+import * as lodash from 'lodash';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SmartNodeSdkService {
   private eventsObserver = new Subject<any>();
-  private eventsObservable = this.eventsObserver.asObservable();  
+  private eventsObservable = this.eventsObserver.asObservable();
+  private hashpackWallet = null;
   
   constructor(
     private smartNodeNetworkService: SmartNodeNetworkService,
@@ -29,6 +31,7 @@ export class SmartNodeSdkService {
       this.smartNodeHashPackService.loadHashconnectData().then(async (hashconnectData) => {
         try {
           let message = await this._initSockets(hashconnectData);
+          this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
           console.log(message);
           
           // subscribing to the nodeObserver, to monitor if a node goes down, and the service switches to a new one...
@@ -39,8 +42,7 @@ export class SmartNodeSdkService {
               // if the node has changed, we re-init the mainSocket to communicate with...
               this.smartNodeSocketsService.initMainSocket(this.smartNodeNetworkService.getCurrentNode());
               // and we re-establish a secure connection by initializing an new auth session...
-              // TODO add wallet here
-              await this.smartNodeSocketsService.initAuth('', this.smartNodeNetworkService.getCurrentNode());
+              await this.smartNodeSocketsService.initAuth(this.hashpackWallet, this.smartNodeNetworkService.getCurrentNode());
               await this.smartNodeSocketsService.authorizeWallet();
             }
           });          
@@ -55,6 +57,7 @@ export class SmartNodeSdkService {
       this.smartNodeHashPackService.observeHashpackConnection.subscribe(async (hashconnectData) => {
         try {
           let message = await this._initSockets(hashconnectData);
+          this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
           console.log(message);
         } catch(error) {
           console.error(error);
