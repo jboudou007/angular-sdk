@@ -54,7 +54,7 @@ export class AppModule { }
 Then, you can use the SDK in your `app.component.ts` to setup the events listeners and the main behavior, like in this example:
 
 ```js
-import { SmartNodeSdkService } from 'src/app/services/src/lib/smart-node-sdk.service';
+import { SmartNodeSdkService } from '@hsuite/angular-sdk';
 
 // subscribing to webSockets authentication events...
 this.smartNodeSdkService.getEventsObserver().subscribe(async(event) => {
