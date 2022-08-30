@@ -66,7 +66,12 @@ export class SmartNodeHashPackService {
   public async disconnect(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
-        await this.hashconnect.disconnect(this.hashconnectData.topic);
+        try {
+          await this.hashconnect.disconnect(this.hashconnectData.topic);          
+        } catch(error) {
+          console.error(error);
+        }
+
         this.hashconnect.clearConnectionsAndData();
 
         await Storage.remove({ key: 'hashconnect.data' });

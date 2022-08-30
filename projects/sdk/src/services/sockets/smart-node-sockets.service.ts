@@ -3,6 +3,7 @@ import { Observable, Subject } from 'rxjs';
 import { SmartNodeSocket } from './smart-socket/smart-socket.class';
 import { Node } from '../network/interfaces/node.interface';
 import * as lodash from 'lodash';
+import { SmartNodeNetworkService } from '../network/smart-node-network.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,9 @@ export class SmartNodeSocketsService {
 
   private mainSocket: SmartNodeSocket;
 
-  constructor() {}
+  constructor(
+    private smartNodeNetworkService: SmartNodeNetworkService
+  ) {}
 
   async init(currentNode: Node, authSession: any, network: Array<Node>): Promise<void> {
     return new Promise(async(resolve, reject) => {
@@ -193,22 +196,26 @@ export class SmartNodeSocketsService {
             online: false
           });
 
-          nodeSocket.on("connect", () => {
+          nodeSocket.on("connect", async() => {
             this.nodesOnline.set(nodeSocket.getNode().operator, {
               node: nodeSocket.getNode(),
               online: true
             });
           });
 
-          nodeSocket.on("disconnect", () => {
+          nodeSocket.on("disconnect", async(event) => {
             this.nodesOnline.set(nodeSocket.getNode().operator, {
               node: nodeSocket.getNode(),
               online: false
             });
+
+            if(nodeSocket.getNode().operator == this.mainSocket.getNode().operator
+            && event == 'transport close') {
+              this.setNodeFromActiveNodes();
+            }
           });
 
           nodeSocket.connect();
-
           this.nodesSockets.push(nodeSocket);
         });
 
@@ -217,5 +224,28 @@ export class SmartNodeSocketsService {
         reject(error);
       }
     });
+  }
+
+  private setNodeFromActiveNodes(): void {
+    try {
+      // creating a Map of active node of the network...
+      let activeNodes = new Map(
+        Array.from(this.nodesOnline).filter(([key, node]) => {
+          if (node.online) {
+            return node.node.operator;
+          }
+      
+          return false;
+        })
+      );
+
+      // mapping the Map into Array<Node>...
+      let network: Array<Node> = Array.from(activeNodes.values()).map(x => x.node);
+
+      // updating the current used node, picking up a random one from the online list...
+      this.smartNodeNetworkService.setNodeFromActiveNodes(network);
+    } catch(error) {
+      throw new Error(error.message);
+    }
   }
 }

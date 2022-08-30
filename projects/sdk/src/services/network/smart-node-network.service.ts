@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Node } from './interfaces/node.interface';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import axios from 'axios';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SmartNodeNetworkService {
-  private nodeObserver: Observable<any> = new Observable();
-  private nodeSubscriber: Subscriber<any> = new Subscriber();
+  private nodeObserver = new Subject<any>();
+  private nodeObservable = this.nodeObserver.asObservable();
 
   private nodes: Array<Node> = new  Array<Node>();
   private node: Node = {
@@ -87,14 +87,10 @@ export class SmartNodeNetworkService {
     ]
   };
 
-  constructor() {
-    this.nodeObserver = new Observable(subscriber => {
-      this.nodeSubscriber = subscriber;
-    });
-  }
+  constructor() {}
 
   getNodeObserver(): Observable<any> {
-    return this.nodeObserver;
+    return this.nodeObservable;
   }
 
   public async setNetwork(network: 'mainnet' | 'testnet' | 'local'): Promise<boolean> {
@@ -103,8 +99,7 @@ export class SmartNodeNetworkService {
         // as very first, we setup the core network...
         this.nodes = this.network[network];
         // setting a random node to use as default one...
-        this.node = this.getRandomNode();  
-        // this.node = this.getSpecificNode(0);
+        this.shuffleNode();
         // then we fetch the entire network of nodes, and we update our nodes array...
         let whitelistedNetwork = await this.getNetwork();
         this.nodes = whitelistedNetwork.data;
@@ -114,18 +109,6 @@ export class SmartNodeNetworkService {
         reject(error);
       }
     })
-  }
-
-  public getCurrentNode(): Node {
-    return this.node;
-  }
-
-  public getRandomNode(): Node {
-    return this.nodes[Math.floor(Math.random() * this.nodes.length)];
-  }
-
-  public getSpecificNode(index: number): Node {
-    return this.nodes[index];
   }
 
   async getNetwork(): Promise<any> {
@@ -143,6 +126,35 @@ export class SmartNodeNetworkService {
         reject(error);        
       }
     });
+  }
+
+  public getCurrentNode(): Node {
+    return this.node;
+  }
+
+  public setCurrentNode(node: Node): void {
+    this.node = node;
+  }
+
+  public getRandomNode(): Node {
+    return this.nodes[Math.floor(Math.random() * this.nodes.length)];
+  }
+
+  public getSpecificNode(index: number): Node {
+    return this.nodes[index];
+  }
+
+  public shuffleNode(): void {
+    this.node = this.getRandomNode();
+  }
+
+  public setNodeFromActiveNodes(activeNodes: Array<Node>): void {
+    if(activeNodes.length) {
+      this.node = activeNodes[Math.floor(Math.random() * activeNodes.length)];
+      this.nodeObserver.next(this.node);
+    } else {
+      throw new Error(`the list of active nodes can't be empty`);
+    }
   }
 
   async postApiEndpoint(endpoint: string, params: any = {}, config: any = {}): Promise<any> {
@@ -178,22 +190,27 @@ export class SmartNodeNetworkService {
       try {
         // try to call the required api endpoint...
         let response = null;
-        switch(type) {
-          case 'get':
-            response = await axios.get(`${this.node.url}/${endpoint}`, params);
-            break;
-          case 'post':
-            response = await axios.post(`${this.node.url}/${endpoint}`, params, config);
-            break;
-        }
 
-        this.nodeSubscriber.next(this.node);
-        resolve(response.data);
+        if(this.node.url != '') {
+          switch(type) {
+            case 'get':
+              response = await axios.get(`${this.node.url}/${endpoint}`, params);
+              break;
+            case 'post':
+              response = await axios.post(`${this.node.url}/${endpoint}`, params, config);
+              break;
+          }
+  
+          this.nodeObserver.next(this.node);
+          resolve(response.data);          
+        } else {
+          resolve(response);
+        }
       } catch(error) {
         // if it fails, we retry a certain amount of times...
         if(trials < this.maxTrialsAllowed) {
           // first we pick up a different node..
-          this.node = this.getRandomNode();
+          this.shuffleNode();
           // then we recursively call the same endpoint once again...
           try {
             let response = await this.callApiEndpoint(type, endpoint, params, config, ++trials);
