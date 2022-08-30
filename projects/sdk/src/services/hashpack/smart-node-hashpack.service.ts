@@ -124,7 +124,7 @@ export class SmartNodeHashPackService {
           metadata: {
             accountToSign: accountId,
             returnTransaction: returnTransaction,
-            hideNft: true
+            hideNft: false
           }
         };
 

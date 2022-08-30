@@ -216,7 +216,6 @@ export class SmartNodeNetworkService {
             let response = await this.callApiEndpoint(type, endpoint, params, config, ++trials);
             resolve(response);            
           } catch(error) {
-            console.log("rejecting", error);
             reject(error);
           }
         } else {

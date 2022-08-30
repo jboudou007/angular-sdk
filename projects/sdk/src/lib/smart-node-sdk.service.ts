@@ -6,6 +6,8 @@ import { SmartNodeNetworkService } from '../services/network/smart-node-network.
 import { SmartNodeRestService } from '../services/rest/smart-node-rest.service';
 import { SmartNodeSocketsService } from '../services/sockets/smart-node-sockets.service';
 import * as lodash from 'lodash';
+import Decimal from 'decimal.js';
+import { TransactionReceipt } from '@hashgraph/sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -24,33 +26,33 @@ export class SmartNodeSdkService {
     @Inject('network') private network: 'mainnet' | 'testnet' | 'local'
   ) {
     // initializing the HSuite Network from the code-nodes...
-    this.smartNodeNetworkService.setNetwork(this.network).then(() => {
+    this.smartNodeNetworkService.setNetwork(this.network).then(async() => {
       console.log(`network has been initialized correctly, all new nodes have been fetched and ready to be used.`);
-    
-      // fetching current storage for wallet session...
-      this.smartNodeHashPackService.loadHashconnectData().then(async (hashconnectData) => {
-        try {
-          let message = await this._initSockets(hashconnectData);
-          this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
-          console.log(message);
-          
-          // subscribing to the nodeObserver, to monitor if a node goes down, and the service switches to a new one...
-          this.smartNodeNetworkService.getNodeObserver().subscribe(async (node) => {
-            let mainSocket = this.smartNodeSocketsService.getMainSocket();
 
-            // if we received a notification, we check if the new node is different than the one used with the mainSocket...
-            if(mainSocket && mainSocket.getNode().operator != node.operator) {
-              // and we re-establish a secure connection by initializing an new auth session...
-              await this.smartNodeSocketsService.initAuth(this.hashpackWallet, this.smartNodeNetworkService.getCurrentNode());
-              await this.smartNodeSocketsService.authorizeWallet();
-            }
-          });          
-        } catch(error) {
-          console.error(error);
-        }
-      }).catch(error => {
-        throw new Error(error.message);
-      });
+      try {
+        let utilities = (await this.smartNodeRestService.getUtilities()).data;
+        this.smartNodeHederaService.setUtilities(utilities);
+        
+        let hashconnectData = await this.smartNodeHashPackService.loadHashconnectData();
+        this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
+
+        let message = await this._initSockets(hashconnectData);
+        console.log(message);
+        
+        // subscribing to the nodeObserver, to monitor if a node goes down, and the service switches to a new one...
+        this.smartNodeNetworkService.getNodeObserver().subscribe(async (node) => {
+          let mainSocket = this.smartNodeSocketsService.getMainSocket();
+
+          // if we received a notification, we check if the new node is different than the one used with the mainSocket...
+          if(mainSocket && mainSocket.getNode().operator != node.operator) {
+            // and we re-establish a secure connection by initializing an new auth session...
+            await this.smartNodeSocketsService.initAuth(this.hashpackWallet, this.smartNodeNetworkService.getCurrentNode());
+            await this.smartNodeSocketsService.authorizeWallet();
+          }
+        });          
+      } catch(error) {
+        console.error(error);
+      }
 
       // subscribing to login/logout events...
       this.smartNodeHashPackService.observeHashpackConnection.subscribe(async (hashconnectData) => {
@@ -163,23 +165,328 @@ export class SmartNodeSdkService {
    })
   }
 
-  public getNetworkService() : SmartNodeNetworkService {
+  public getNetworkService(): SmartNodeNetworkService {
     return this.smartNodeNetworkService;
   }
 
-  public getHashPackService() : SmartNodeHashPackService {
+  public getHashPackService(): SmartNodeHashPackService {
     return this.smartNodeHashPackService;
   }
   
-  public getRestService() : SmartNodeRestService {
+  public getRestService(): SmartNodeRestService {
     return this.smartNodeRestService;
   }
 
-  public getSocketsService() : SmartNodeSocketsService {
+  public getSocketsService(): SmartNodeSocketsService {
     return this.smartNodeSocketsService;
   }
 
-  public getHederaService() : SmartNodeHederaService {
+  public getHederaService(): SmartNodeHederaService {
     return this.smartNodeHederaService;
+  }
+
+  public async reserveNft(tokenId: string, walletId: string): Promise<number> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let serialNumber = await this.smartNodeSocketsService.reserveNft(tokenId, walletId);
+        resolve(serialNumber);
+      } catch(error) {
+        reject(error);
+      }
+    })
+  }
+
+  public async mintLpNft(joinPool: {
+    baseToken: {
+      id: string,
+      amount: Decimal,
+      decimals: Decimal
+    },
+    swapToken: {
+      id: string,
+      amount: Decimal
+      decimals: Decimal
+    }
+  }): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let mintedNft = await this.smartNodeSocketsService.mintLpNft(joinPool);
+        resolve(mintedNft);
+      } catch(error) {
+        reject(error);
+      }
+    })
+  }
+
+  public async burnLpNft(serialNumber: number): Promise<TransactionReceipt> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let receipt = await this.smartNodeSocketsService.burnLpNft(serialNumber);
+        resolve(receipt);
+      } catch(error) {
+        reject(error);
+      }
+    })
+  }
+
+  public launchpadNftTransaction(
+    launchpadDocument: any,
+    senderId: string,
+    hbarAmount: Decimal,
+    serialNumber: number,
+    tokenId: string,
+    memo?: string,
+    fees?: any,
+    returnTransaction?: boolean    
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().launchpadNftTransaction(
+          launchpadDocument,
+          senderId,
+          hbarAmount,
+          serialNumber,
+          tokenId,
+          memo,
+          fees,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'launchpadBuy',
+            signedTransaction: signedTransaction
+          }, 'launchpadBuy');
+
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
+  public launchpadTransaction(
+    launchpadDocument: any,
+    senderId: string,
+    hbarAmount: Decimal,
+    tokenAmount: number,
+    tokenId: string,
+    tokenDecimals: number,
+    memo?: string,
+    fees?: any,
+    returnTransaction?: boolean   
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().launchpadTransaction(
+          launchpadDocument,
+          senderId,
+          hbarAmount,
+          tokenAmount,
+          tokenId,
+          tokenDecimals,
+          memo,
+          fees,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'launchpadBuy',
+            signedTransaction: signedTransaction
+          }, 'launchpadBuy');
+
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
+  public sendSwapTransaction(
+    senderId: string,
+    swap: any,
+    routing: any,
+    fees?: Array<any>,
+    memo?: string,
+    returnTransaction?: boolean    
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().sendSwapTransaction(
+          senderId,
+          swap,
+          routing,
+          fees,
+          memo,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'exchangeSwapRequest',
+            signedTransaction: signedTransaction
+          }, 'exchangeSwapRequest');
+
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        }        
+      } catch(error) {
+        reject(error);
+      }
+    })
+  }
+
+  public exitPoolTransaction(
+    senderId: string,
+    poolWalletId: string,
+    exitPool: {
+      baseToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      },
+      swapToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      }
+    },
+    nft: {
+      tokenId: string,
+      serialNumber: number
+    },
+    memo?: string,
+    fees?: Array<any>,
+    returnTransaction?: boolean    
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().exitPoolTransaction(
+          senderId,
+          poolWalletId,
+          exitPool,
+          nft,
+          memo,
+          fees,
+          returnTransaction
+        );
+
+        if (responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+    
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'exitPool',
+            signedTransaction: signedTransaction
+          }, 'exitPool');
+    
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error.message ?
+            responseData.response.error.message :
+            responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    })
+  }
+
+  public joinPoolTransaction(
+    senderId: string,
+    poolWalletId: string,
+    joinPool: {
+      baseToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      },
+      swapToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      }
+    },
+    nft: {
+      tokenId: string,
+      serialNumber: number
+    },
+    memo?: string,
+    fees?: Array<any>,
+    returnTransaction?: boolean  
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().joinPoolTransaction(
+          senderId,
+          poolWalletId,
+          joinPool,
+          nft,
+          memo,
+          fees,
+          returnTransaction
+        );
+
+        if (responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'joinPool',
+            signedTransaction: signedTransaction
+          }, 'joinPool');
+    
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error.message ?
+            responseData.response.error.message :
+            responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    })
   }
 }

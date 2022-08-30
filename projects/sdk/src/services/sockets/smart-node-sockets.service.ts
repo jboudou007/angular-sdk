@@ -72,8 +72,12 @@ export class SmartNodeSocketsService {
   async reserveNft(tokenId: string, walletId: string): Promise<number> {
     return new Promise(async(resolve, reject) => {
       try {
-        this.mainSocket.fromOneTimeEvent('reserveNft').then((response: number) => {
-          resolve(response);
+        this.mainSocket.fromOneTimeEvent('reserveNft').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
         }).catch(error => {
           reject(error);
         });
@@ -103,6 +107,28 @@ export class SmartNodeSocketsService {
 
         this.mainSocket.emit('mintLpNft', {
           joinPool: joinPool
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
+  async burnLpNft(serialNumber: number): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.mainSocket.fromOneTimeEvent('burnLpNft').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.mainSocket.emit('burnLpNft', {
+          serialNumber: serialNumber
         });
       } catch(error) {
         reject(error);

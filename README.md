@@ -83,152 +83,133 @@ this.smartNodeSdkService.getHashPackService().observeHashpackConnection.subscrib
 });
 ```
 
-Finally, you can use the `SmartNodeRestService` and the `smartNodeHederaService` to interact with the Smart Nodes.
-So for example, if you want to send a launchpad buy transaction, you can do something like this:
-
-```js
-responseData  = await this.smartNodeSdkService.getHederaService().launchpadTransaction(
-  launchpad_current_round, //fetched from the launchpad endpoint API
-  wallet_sender, // the wallet of the buyer
-  new Decimal(hbar_amount), // the amount of hbar about to be spent
-  token_amount, // the amount of token meant to be received
-  token_id, // the tokenID meant to be received, fetched from the launchpad endpoint API 
-  token_decimals, // the token's decimals, fetched from the launchpad endpoint API
-  null, // memo to add into the transaction, if needed
-  launchpad_current_round.fees // the fees to be applied, fetched from the launchpad endpoint API
-);
-
-if(responseData.response.success) {
-  let signedTransaction = responseData.response.signedTransaction;
-
-  this.smartNodeSdkService.getSocketsService().sendMessageToSmartNodes({
-    type: 'launchpadBuy',
-    signedTransaction: signedTransaction
-  }, 'launchpadBuy');
-
-  // here you can notify the success on the UI...
-} else {
-  // here you can notify the error on the UI...
-  // (for example if user rejected from hashpack)
-} 
-```
-
 ## Services
 You can interact with the SDK on a very high level, you don't need to interact with the websockets 
 or the network services unless you're doing something very advanced.
 
-The easiest way to use this SDK is to interact with the `SmartNodeRestService` and the `smartNodeHederaService`.
-The `SmartNodeSocketsService` is instead used to send SmartMessages to the network's node.
-
-### SmartNodeSocketsService
-Most of the methods of this service are meant to be used behind the scene, still the most important method you 
-will be using is called `sendMessageToSmartNodes`, and it's used to send the pre-signed transaction to our network.
-
 Nodes will be validating the requested transaction, and sign it if all the validators checks approves it.
-An example has been provided previously in the `How to Use the SDK` section, and the list of the messages you can send 
-will be listed below:
 
-#### launchpadBuy
-Documentation - Work in progress...
-
-#### exchangeSwapRequest
-Documentation - Work in progress...
-
-#### joinPool
-Documentation - Work in progress...
-
-#### exitPool
-Documentation - Work in progress...
+### SmartNodeSdkService
+The easiest way to use this SDK is to interact only with the `SmartNodeSdkService`.
 
 #### reserveNft
-Documentation - Work in progress...
-
-#### burnLpNft
-Documentation - Work in progress...
+```js
+public async reserveNft(tokenId: string, walletId: string): Promise<number>
+```
 
 #### mintLpNft
-Documentation - Work in progress...
+```js
+  public async mintLpNft(
+  joinPool: {
+    baseToken: {
+      id: string,
+      amount: Decimal,
+      decimals: Decimal
+    },
+    swapToken: {
+      id: string,
+      amount: Decimal
+      decimals: Decimal
+    }
+  }): Promise<any>
+```
 
-### smartNodeHederaService
-This service is mainly used to send informations and interact with the Smart Nodes.
-
-#### associateToken
-Documentation - Work in progress...
-
-#### sendSwapTransaction
-Documentation - Work in progress...
-
-#### launchpadTransaction
-Documentation - Work in progress...
+#### burnLpNft
+```js
+public async burnLpNft(serialNumber: number): Promise<TransactionReceipt>
+```
 
 #### launchpadNftTransaction
-Documentation - Work in progress...
+```js
+  public launchpadNftTransaction(
+    launchpadDocument: any,
+    senderId: string,
+    hbarAmount: Decimal,
+    serialNumber: number,
+    tokenId: string,
+    memo?: string,
+    fees?: any,
+    returnTransaction?: boolean    
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}>
+```
 
-#### joinPoolTransaction
-Documentation - Work in progress...
+#### launchpadTransaction
+```js
+  public launchpadTransaction(
+    launchpadDocument: any,
+    senderId: string,
+    hbarAmount: Decimal,
+    tokenAmount: number,
+    tokenId: string,
+    tokenDecimals: number,
+    memo?: string,
+    fees?: any,
+    returnTransaction?: boolean   
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}>
+```
+
+#### sendSwapTransaction
+```js
+  public sendSwapTransaction(
+    senderId: string,
+    swap: any,
+    routing: any,
+    fees?: Array<any>,
+    memo?: string,
+    returnTransaction?: boolean    
+  ): Promise<any>
+```
 
 #### exitPoolTransaction
-Documentation - Work in progress...
-
-### SmartNodeRestService
-This service is mainly used to fetch informations from the node, it makes uses of HTTP GET/POST methods.
-
-#### loadLaunchpads
-It takes no parameters, returns the list of our launchpads.
 ```js
-let response = await loadLaunchpads();
-
-### loadPools
-It takes no parameters, returns the list of our pools.
-```js
-let response = await loadPools();
+  public exitPoolTransaction(
+    senderId: string,
+    poolWalletId: string,
+    exitPool: {
+      baseToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      },
+      swapToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      }
+    },
+    nft: {
+      tokenId: string,
+      serialNumber: number
+    },
+    memo?: string,
+    fees?: Array<any>,
+    returnTransaction?: boolean    
+  ): Promise<any>
 ```
 
-#### loadTokens
-It takes no parameters, returns the list of our tokens.
+#### joinPoolTransaction
 ```js
-let response = await loadTokens();
-```
-
-#### getAccountInfos
-it takes two parameters:\
-accountId => the account you want to retrieve the infos from
-```js
-let response = await getAccountInfos(accountId);
-```
-#### getAccountBalance
-it takes two parameters:\
-accountId => the account you want to retrieve the balances from
-```js
-let response = await getAccountBalance(accountId);
-```
-
-#### createPool
-it takes two parameters:\
-pool => an object shaped as follows
-```js
-let pool = {
-  "baseToken": {
-    "id": "string"
-  },
-  "swapToken": {
-    "id": "string"
-  }
-}
-```
-
-You can call the method by running:
-```js
-let response = await createPool(pool);
-```
-
-#### calculatePoolPrice
-it takes four parameters:\
-amount => the amount you want to swap
-baseToken => the id of the token you want to swap
-swapToken => the id of the token you want to receive
-
-You can call the method by running:
-```js
-let response = await calculatePoolPrice(amount, baseToken, swapToken);
+  public joinPoolTransaction(
+    senderId: string,
+    poolWalletId: string,
+    joinPool: {
+      baseToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      },
+      swapToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      }
+    },
+    nft: {
+      tokenId: string,
+      serialNumber: number
+    },
+    memo?: string,
+    fees?: Array<any>,
+    returnTransaction?: boolean  
+  ): Promise<any>
 ```

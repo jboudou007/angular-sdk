@@ -27,12 +27,10 @@ export class SmartNodeHederaService {
     private smartNodeHashPackService: SmartNodeHashPackService,
     private smartNodeRestService: SmartNodeRestService,
     @Inject('network') private network: 'mainnet' | 'testnet' | 'local'
-  ) {
-    this.smartNodeRestService.getUtilities().then(utilities => {
-      this.utilities = utilities.data;
-    }).catch(error => {
-      console.error(error);
-    });
+  ) {}
+
+  setUtilities(utilities: any): void {
+    this.utilities = utilities;
   }
 
   getRandomNodeForNetwork(): AccountId {
