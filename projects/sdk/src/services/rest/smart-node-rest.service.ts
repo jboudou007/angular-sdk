@@ -175,6 +175,23 @@ export class SmartNodeRestService {
     });
   }
 
+  public async loadProposal(tokenId: string, consensus_timestamp: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/proposal?tokenId=${tokenId}&consensus_timestamp=${consensus_timestamp}`);
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'loadProposal',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadTokens(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
