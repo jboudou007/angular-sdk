@@ -141,6 +141,40 @@ export class SmartNodeRestService {
     });
   }
 
+  public async loadDAOs(): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/list`);
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'loadDAOs',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
+  public async loadProposals(tokenId: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/proposals?tokenId=${tokenId}`);
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'loadProposals',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadTokens(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
