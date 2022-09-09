@@ -23,10 +23,11 @@ export class SmartNodeSdkService {
     private smartNodeSocketsService: SmartNodeSocketsService,
     private smartNodeHashPackService: SmartNodeHashPackService,
     private smartNodeHederaService: SmartNodeHederaService,
-    @Inject('network') private network: 'mainnet' | 'testnet' | 'local'
+    @Inject('network') private network: 'mainnet' | 'testnet' | 'local',
+    @Inject('node') private node: string
   ) {
     // initializing the HSuite Network from the code-nodes...
-    this.smartNodeNetworkService.setNetwork(this.network).then(async() => {
+    this.smartNodeNetworkService.setNetwork(this.network, this.node).then(async() => {
       console.log(`network has been initialized correctly, all new nodes have been fetched and ready to be used.`);
 
       try {

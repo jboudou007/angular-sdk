@@ -93,13 +93,18 @@ export class SmartNodeNetworkService {
     return this.nodeObservable;
   }
 
-  public async setNetwork(network: 'mainnet' | 'testnet' | 'local'): Promise<boolean> {
+  public async setNetwork(network: 'mainnet' | 'testnet' | 'local', node: string): Promise<boolean> {
     return new Promise(async(resolve, reject) => {
       try {
         // as very first, we setup the core network...
         this.nodes = this.network[network];
         // setting a random node to use as default one...
-        this.shuffleNode();
+        if(node == 'random') {
+          this.shuffleNode();
+        } else {
+          this.node = this.getSpecificNode(Number(node));
+        }
+        
         // then we fetch the entire network of nodes, and we update our nodes array...
         let whitelistedNetwork = await this.getNetwork();
         this.nodes = whitelistedNetwork.data;
