@@ -212,18 +212,24 @@ export class SmartNodeNetworkService {
           resolve(response);
         }
       } catch(error) {
-        // if it fails, we retry a certain amount of times...
-        if(trials < this.maxTrialsAllowed) {
-          // first we pick up a different node..
-          this.shuffleNode();
-          // then we recursively call the same endpoint once again...
-          try {
-            let response = await this.callApiEndpoint(type, endpoint, params, config, ++trials);
-            resolve(response);            
-          } catch(error) {
+        if(type == 'get') {
+          // if it's a GET and it fails, we retry a certain amount of times...
+          if(trials < this.maxTrialsAllowed) {
+            // first we pick up a different node..
+            this.shuffleNode();
+            // then we recursively call the same endpoint once again...
+            try {
+              let response = await this.callApiEndpoint(type, endpoint, params, config, ++trials);
+              resolve(response);            
+            } catch(error) {
+              reject(error);
+            }
+          } else {
             reject(error);
           }
         } else {
+          // otherwise, if it's a POST/PUT we just reject the error without insisting...
+          // NOTE: in future, any POST/PUT will be moved into socket instead for security and performance reasons.
           reject(error);
         }
       }
