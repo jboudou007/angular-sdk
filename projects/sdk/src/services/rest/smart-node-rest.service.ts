@@ -192,6 +192,23 @@ export class SmartNodeRestService {
     });
   }
 
+  public async loadSnapshot(tokenId: string, consensus_timestamp: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/snapshot?tokenId=${tokenId}&consensus_timestamp=${consensus_timestamp}`);
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'loadSnapshot',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadTokens(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
