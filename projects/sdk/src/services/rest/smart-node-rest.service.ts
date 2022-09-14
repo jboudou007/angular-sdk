@@ -112,7 +112,12 @@ export class SmartNodeRestService {
   public async getAccountInfos(accountId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`wallets/info?accountId=${accountId}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `wallets/info`,
+          { params: {
+            accountId: accountId
+          } }
+        );
 
         resolve({
           function: 'getAccountInfos',
@@ -128,7 +133,12 @@ export class SmartNodeRestService {
   public async getAccountBalance(accountId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`wallets/balance?accountId=${accountId}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `wallets/balance`,
+          { params: {
+            accountId: accountId
+          } } 
+        );
 
         resolve({
           function: 'getAccountInfos',
@@ -161,7 +171,12 @@ export class SmartNodeRestService {
   public async loadProposals(tokenId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/proposals?tokenId=${tokenId}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `dao/proposals`,
+          { params: {
+            tokenId: tokenId
+          } }          
+        );
         let node = this.smartNodeNetworkService.getCurrentNode();
 
         resolve({
@@ -178,7 +193,13 @@ export class SmartNodeRestService {
   public async loadProposal(tokenId: string, consensus_timestamp: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/proposal?tokenId=${tokenId}&consensus_timestamp=${consensus_timestamp}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `dao/proposal`,
+          { params: {
+            tokenId: tokenId,
+            consensus_timestamp: consensus_timestamp
+          } }
+        );
         let node = this.smartNodeNetworkService.getCurrentNode();
 
         resolve({
@@ -195,7 +216,13 @@ export class SmartNodeRestService {
   public async loadSnapshot(tokenId: string, consensus_timestamp: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/snapshot?tokenId=${tokenId}&consensus_timestamp=${consensus_timestamp}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `dao/snapshot`,
+          { params: {
+            tokenId: tokenId,
+            consensus_timestamp: consensus_timestamp
+          } }
+        );
         let node = this.smartNodeNetworkService.getCurrentNode();
 
         resolve({
@@ -233,7 +260,12 @@ export class SmartNodeRestService {
   public async getTokenInfos(tokenId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`tokens/info?tokenId=${tokenId}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `tokens/info`,
+          { params: {
+            tokenId: tokenId
+          } }          
+        );
 
         resolve({
           function: 'getTokenInfos',
@@ -249,7 +281,14 @@ export class SmartNodeRestService {
   public async calculatePoolPrice(amount: string, baseTokenId: string, swapTokenId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`pools/price?amount=${amount}&baseToken=${baseTokenId}&swapToken=${swapTokenId}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `pools/price`,
+          { params: {
+            amount: amount,
+            baseToken: baseTokenId,
+            swapToken: swapTokenId
+          } }
+        );
         
         resolve({
           function: 'calculatePoolPrice',
@@ -265,7 +304,12 @@ export class SmartNodeRestService {
   public async getPoolRatio(walletId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`pools/ratio?wallet=${walletId}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `pools/ratio`,
+          { params: {
+            wallet: walletId
+          } }          
+        );
         
         resolve({
           function: 'getPoolRatio',
