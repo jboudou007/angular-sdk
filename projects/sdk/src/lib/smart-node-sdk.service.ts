@@ -242,6 +242,10 @@ export class SmartNodeSdkService {
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
       try {
+        if(hbarAmount.lessThan(0)) {
+          reject(new Error(`hbar amount must be a positive number`));
+        }
+        
         let responseData: any = await this.getHederaService().launchpadNftTransaction(
           launchpadDocument,
           senderId,
@@ -290,6 +294,10 @@ export class SmartNodeSdkService {
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
       try {
+        if(hbarAmount.lessThan(0)) {
+          reject(new Error(`hbar amount must be a positive number`));
+        }
+        
         let responseData: any = await this.getHederaService().launchpadTransaction(
           launchpadDocument,
           senderId,
