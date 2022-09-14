@@ -243,38 +243,41 @@ export class SmartNodeSdkService {
     return new Promise(async(resolve, reject) => {
       try {
         if(hbarAmount.lessThan(0)) {
-          reject(new Error(`hbar amount must be a positive number`));
-        }
-        
-        let responseData: any = await this.getHederaService().launchpadNftTransaction(
-          launchpadDocument,
-          senderId,
-          hbarAmount,
-          serialNumber,
-          tokenId,
-          memo,
-          fees,
-          returnTransaction
-        );
-
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'launchpadBuy',
-            signedTransaction: signedTransaction
-          }, 'launchpadBuy');
-
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
           resolve({
             status: 'ERROR',
-            payload: responseData.response.error
+            payload: `hbar amount must be a positive number`
           });
-        } 
+        } else {
+          let responseData: any = await this.getHederaService().launchpadNftTransaction(
+            launchpadDocument,
+            senderId,
+            hbarAmount,
+            serialNumber,
+            tokenId,
+            memo,
+            fees,
+            returnTransaction
+          );
+  
+          if(responseData.response.success) {
+            let signedTransaction = responseData.response.signedTransaction;
+  
+            this.getSocketsService().sendMessageToSmartNodes({
+              type: 'launchpadBuy',
+              signedTransaction: signedTransaction
+            }, 'launchpadBuy');
+  
+            resolve({
+              status: 'SUCCESS',
+              payload: responseData
+            });
+          } else {
+            resolve({
+              status: 'ERROR',
+              payload: responseData.response.error
+            });
+          } 
+        }
       } catch(error) {
         reject(error);
       }
@@ -295,39 +298,42 @@ export class SmartNodeSdkService {
     return new Promise(async(resolve, reject) => {
       try {
         if(hbarAmount.lessThan(0)) {
-          reject(new Error(`hbar amount must be a positive number`));
-        }
-        
-        let responseData: any = await this.getHederaService().launchpadTransaction(
-          launchpadDocument,
-          senderId,
-          hbarAmount,
-          tokenAmount,
-          tokenId,
-          tokenDecimals,
-          memo,
-          fees,
-          returnTransaction
-        );
-
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'launchpadBuy',
-            signedTransaction: signedTransaction
-          }, 'launchpadBuy');
-
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
           resolve({
             status: 'ERROR',
-            payload: responseData.response.error
+            payload: `hbar amount must be a positive number`
           });
-        } 
+        } else {
+          let responseData: any = await this.getHederaService().launchpadTransaction(
+            launchpadDocument,
+            senderId,
+            hbarAmount,
+            tokenAmount,
+            tokenId,
+            tokenDecimals,
+            memo,
+            fees,
+            returnTransaction
+          );
+  
+          if(responseData.response.success) {
+            let signedTransaction = responseData.response.signedTransaction;
+  
+            this.getSocketsService().sendMessageToSmartNodes({
+              type: 'launchpadBuy',
+              signedTransaction: signedTransaction
+            }, 'launchpadBuy');
+  
+            resolve({
+              status: 'SUCCESS',
+              payload: responseData
+            });
+          } else {
+            resolve({
+              status: 'ERROR',
+              payload: responseData.response.error
+            });
+          } 
+        }
       } catch(error) {
         reject(error);
       }
