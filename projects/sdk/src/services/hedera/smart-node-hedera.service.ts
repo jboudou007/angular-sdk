@@ -51,7 +51,7 @@ export class SmartNodeHederaService {
     return new AccountId(nodeAccountId);
   }
 
-  private async makeBytes(transaction: Transaction, accountId: string) {
+  public async makeBytes(transaction: Transaction, accountId: string) {
     return new Promise(async (resolve, reject) => {
       try {
         let transactionId = TransactionId.generate(accountId);
@@ -83,6 +83,40 @@ export class SmartNodeHederaService {
         }
 
         if (response.success) {
+          responseData.receipt = TransactionReceipt.fromBytes(response.receipt as Uint8Array);
+        }
+
+        resolve(responseData);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  public async voteTransaction(
+    daoTokenId: string,
+    proposalDocument: any,
+    votedOption: number,
+    senderId: string,
+    fees: any,
+    returnTransaction?: boolean 
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let transaction = new TransferTransaction()
+        .addHbarTransfer(senderId, Hbar.from(-fees.fixed.hbar, HbarUnit.Hbar))
+        .addHbarTransfer(fees.wallet, Hbar.from(fees.fixed.hbar, HbarUnit.Hbar))
+        .setTransactionMemo(`${daoTokenId}/${proposalDocument.consensus_timestamp}/${votedOption}`);
+
+        let transBytes = await this.makeBytes(transaction, senderId);
+        let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
+
+        let responseData: any = {
+          response: response,
+          receipt: null
+        }
+
+        if (response.success && returnTransaction === false) {
           responseData.receipt = TransactionReceipt.fromBytes(response.receipt as Uint8Array);
         }
 

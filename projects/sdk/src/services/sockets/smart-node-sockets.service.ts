@@ -69,30 +69,6 @@ export class SmartNodeSocketsService {
     return this.mainSocket;
   }
 
-  async voteProposal(tokenId: string, proposalTimestamp: string, option: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.mainSocket.fromOneTimeEvent('voteProposal').then((response: {status: string, payload: any, error: string}) => {
-          if(response.status == 'success') {
-            resolve(response.payload);
-          } else {
-            reject(new Error(response.error));
-          }
-        }).catch(error => {
-          reject(error);
-        });
-
-        this. mainSocket.emit('voteProposal', {
-          tokenId: tokenId,
-          proposalTimestamp: proposalTimestamp,
-          option: option
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
   async reserveNft(tokenId: string, walletId: string): Promise<number> {
     return new Promise(async(resolve, reject) => {
       try {

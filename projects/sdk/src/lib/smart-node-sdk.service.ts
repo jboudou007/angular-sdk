@@ -284,7 +284,50 @@ export class SmartNodeSdkService {
     });
   }
 
-  public launchpadTransaction(
+  public voteTransaction(
+    daoTokenId: string,
+    proposalDocument: any,
+    votedOption: number,
+    senderId: string,
+    fees: any,
+    returnTransaction?: boolean   
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().voteTransaction(
+          daoTokenId,
+          proposalDocument,
+          votedOption,
+          senderId,
+          fees,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'voteProposal',
+            signedTransaction: signedTransaction
+          }, 'voteProposal');
+
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
+  public async launchpadTransaction(
     launchpadDocument: any,
     senderId: string,
     hbarAmount: Decimal,
@@ -340,7 +383,7 @@ export class SmartNodeSdkService {
     });
   }
 
-  public sendSwapTransaction(
+  public async sendSwapTransaction(
     senderId: string,
     swap: any,
     routing: any,
@@ -383,7 +426,7 @@ export class SmartNodeSdkService {
     })
   }
 
-  public exitPoolTransaction(
+  public async exitPoolTransaction(
     senderId: string,
     poolWalletId: string,
     exitPool: {
@@ -444,7 +487,7 @@ export class SmartNodeSdkService {
     })
   }
 
-  public joinPoolTransaction(
+  public async joinPoolTransaction(
     senderId: string,
     poolWalletId: string,
     joinPool: {
