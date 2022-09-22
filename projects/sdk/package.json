@@ -32,7 +32,7 @@
     "@types/lodash": "^4.14.184",
     "axios": "^0.27.2",
     "decimal.js": "^10.4.0",
-    "hashconnect": "^0.2.2",
+    "hashconnect": "^0.2.3",
     "ngx-socket-io": "^4.3.0"
   }
 }
