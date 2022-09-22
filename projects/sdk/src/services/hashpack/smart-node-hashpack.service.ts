@@ -25,7 +25,7 @@ export class SmartNodeHashPackService {
     this.appMetadata = {
       name: "HSuite Finance",
       description: "Enhanching the Hedera Network",
-      icon: "https://testnet-sn1.hbarsuite.network/public/tokens/hsuite.png"
+      icon: "https://testnet-sn1.hbarsuite.network/public/logos/rounded_logo.png"
     };
 
     this.hashconnect.pairingEvent.on(async (pairingData) => {
