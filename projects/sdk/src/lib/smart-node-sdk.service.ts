@@ -327,6 +327,47 @@ export class SmartNodeSdkService {
     });
   }
 
+  public proposalTransaction(
+    daoTokenId: string,
+    proposalDocument: any,
+    senderId: string,
+    fees: any,
+    returnTransaction?: boolean   
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().proposalTransaction(
+          daoTokenId,
+          senderId,
+          fees,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'createProposal',
+            signedTransaction: signedTransaction,
+            proposalDocument: proposalDocument
+          }, 'createProposal');
+
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public async launchpadTransaction(
     launchpadDocument: any,
     senderId: string,
