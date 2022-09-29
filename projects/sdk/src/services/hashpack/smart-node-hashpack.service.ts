@@ -41,6 +41,10 @@ export class SmartNodeHashPackService {
     });
   }
 
+  public getHashconnectInstance(): any {
+    return this.hashconnect;
+  }
+
   public async connect(network: 'mainnet' | 'testnet' | 'previewnet', type?: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
