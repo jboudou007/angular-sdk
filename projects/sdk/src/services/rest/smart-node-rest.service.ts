@@ -190,14 +190,15 @@ export class SmartNodeRestService {
     });
   }
 
-  public async loadProposal(tokenId: string, consensus_timestamp: string): Promise<any> {
+  public async loadProposal(tokenId: string, consensus_timestamp: string, type: 'public' | 'private'): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
         let response = await this.smartNodeNetworkService.getApiEndpoint(
           `dao/proposal`,
           { params: {
             tokenId: tokenId,
-            consensus_timestamp: consensus_timestamp
+            consensus_timestamp: consensus_timestamp,
+            type: type
           } }
         );
         let node = this.smartNodeNetworkService.getCurrentNode();
