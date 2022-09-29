@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@capacitor/storage';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { Subject } from 'rxjs';
+import * as lodash from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class SmartNodeHashPackService {
   private dataObserver = new Subject<any>();
   public observeHashpackConnection = this.dataObserver.asObservable();
 
+  private network: string;
   private hashconnectData = {
     topic: '',
     pairingString: '',
@@ -41,13 +43,21 @@ export class SmartNodeHashPackService {
     });
   }
 
-  public getHashconnectInstance(): any {
-    return this.hashconnect;
+  public getSigner(): any {
+    const provider = this.hashconnect.getProvider(
+      this.network, 
+      this.hashconnectData.topic,
+      lodash.first(this.hashconnectData.accountIds)
+    );
+
+    const signer = this.hashconnect.getSigner(provider);
+    return signer;
   }
 
   public async connect(network: 'mainnet' | 'testnet' | 'previewnet', type?: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
+        this.network = network;
         let initData = await this.hashconnect.init(this.appMetadata, network, true);
 
         this.hashconnectData = {
