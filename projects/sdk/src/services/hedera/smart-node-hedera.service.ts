@@ -106,7 +106,7 @@ export class SmartNodeHederaService {
         let transaction = new TransferTransaction()
         .addHbarTransfer(senderId, Hbar.from(-fees.fixed.hbar, HbarUnit.Hbar))
         .addHbarTransfer(fees.wallet, Hbar.from(fees.fixed.hbar, HbarUnit.Hbar))
-        .setTransactionMemo(`${daoTokenId}/${proposalDocument.consensus_timestamp}/${votedOption}`);
+        .setTransactionMemo(`${daoTokenId}/${proposalDocument.consensus_timestamp}/${proposalDocument.type}/${votedOption}`);
 
         let transBytes = await this.makeBytes(transaction, senderId);
         let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
