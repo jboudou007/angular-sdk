@@ -190,6 +190,31 @@ export class SmartNodeRestService {
     });
   }
 
+  public async loadFees(
+    fee: 'tokens' | 'launchpads' | 'daos' | 'proposals' | 'votes' | 'multisig' | 'marketplace' | 'swap' | 'join' | 'exit'
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `fees/info`,
+          { params: {
+            fee: fee
+          } }
+        );
+
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'loadFees',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadProposal(tokenId: string, consensus_timestamp: string, type: 'public' | 'private'): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
