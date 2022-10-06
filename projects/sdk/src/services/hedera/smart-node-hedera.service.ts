@@ -96,13 +96,14 @@ export class SmartNodeHederaService {
   public async createDaoTransaction(
     daoTokenId: string,
     senderId: string,
-    dao: {
-      tokenId: string
-      councilId: string
-      type: 'classic' | 'limited'
-      logoUrl: string
+    daoDocument: {
       about: string
-    },    
+      tokenId: string
+      image: string
+      limited: {
+        councilNftId: string
+      }
+    },   
     fees: any,
     returnTransaction?: boolean
   ) {
@@ -111,7 +112,7 @@ export class SmartNodeHederaService {
         let transaction = new TransferTransaction()
         .addHbarTransfer(senderId, Hbar.from(-fees.fixed.hbar, HbarUnit.Hbar))
         .addHbarTransfer(fees.wallet, Hbar.from(fees.fixed.hbar, HbarUnit.Hbar))
-        .setTransactionMemo(`${daoTokenId}/${dao.type}/${dao.councilId}`);
+        .setTransactionMemo(`${daoTokenId}/${daoDocument.limited.councilNftId}`);
 
         let transBytes = await this.makeBytes(transaction, senderId);
         let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);

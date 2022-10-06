@@ -287,12 +287,13 @@ export class SmartNodeSdkService {
   public createDaoTransaction(
     daoTokenId: string,
     senderId: string,
-    dao: {
-      tokenId: string
-      councilId: string
-      type: 'classic' | 'limited'
-      logoUrl: string
+    daoDocument: {
       about: string
+      tokenId: string
+      image: string
+      limited: {
+        councilNftId: string
+      }
     },    
     fees: any,
     returnTransaction?: boolean
@@ -302,7 +303,7 @@ export class SmartNodeSdkService {
         let responseData: any = await this.getHederaService().createDaoTransaction(
           daoTokenId,
           senderId,
-          dao,
+          daoDocument,
           fees,
           returnTransaction
         );
@@ -312,7 +313,8 @@ export class SmartNodeSdkService {
 
           this.getSocketsService().sendMessageToSmartNodes({
             type: 'createDao',
-            signedTransaction: signedTransaction
+            signedTransaction: signedTransaction,
+            daoDocument: daoDocument
           }, 'createDao');
 
           resolve({
