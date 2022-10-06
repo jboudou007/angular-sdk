@@ -311,9 +311,9 @@ export class SmartNodeSdkService {
           let signedTransaction = responseData.response.signedTransaction;
 
           this.getSocketsService().sendMessageToSmartNodes({
-            type: 'createDaoTransaction',
+            type: 'createDao',
             signedTransaction: signedTransaction
-          }, 'createDaoTransaction');
+          }, 'createDao');
 
           resolve({
             status: 'SUCCESS',
