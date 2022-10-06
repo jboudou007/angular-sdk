@@ -93,6 +93,45 @@ export class SmartNodeHederaService {
     });
   }
 
+  public async createDaoTransaction(
+    daoTokenId: string,
+    senderId: string,
+    dao: {
+      tokenId: string
+      councilId: string
+      type: 'classic' | 'limited'
+      logoUrl: string
+      about: string
+    },    
+    fees: any,
+    returnTransaction?: boolean
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let transaction = new TransferTransaction()
+        .addHbarTransfer(senderId, Hbar.from(-fees.fixed.hbar, HbarUnit.Hbar))
+        .addHbarTransfer(fees.wallet, Hbar.from(fees.fixed.hbar, HbarUnit.Hbar))
+        .setTransactionMemo(`${daoTokenId}/${dao.type}/${dao.councilId}`);
+
+        let transBytes = await this.makeBytes(transaction, senderId);
+        let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
+
+        let responseData: any = {
+          response: response,
+          receipt: null
+        }
+
+        if (response.success && returnTransaction === false) {
+          responseData.receipt = TransactionReceipt.fromBytes(response.receipt as Uint8Array);
+        }
+
+        resolve(responseData);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   public async voteTransaction(
     daoTokenId: string,
     proposalDocument: any,

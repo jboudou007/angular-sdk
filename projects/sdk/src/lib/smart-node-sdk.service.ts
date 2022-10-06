@@ -284,6 +284,53 @@ export class SmartNodeSdkService {
     });
   }
 
+  public createDaoTransaction(
+    daoTokenId: string,
+    senderId: string,
+    dao: {
+      tokenId: string
+      councilId: string
+      type: 'classic' | 'limited'
+      logoUrl: string
+      about: string
+    },    
+    fees: any,
+    returnTransaction?: boolean
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().createDaoTransaction(
+          daoTokenId,
+          senderId,
+          dao,
+          fees,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'createDaoTransaction',
+            signedTransaction: signedTransaction
+          }, 'createDaoTransaction');
+
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public voteTransaction(
     daoTokenId: string,
     proposalDocument: any,
