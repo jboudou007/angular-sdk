@@ -1,6 +1,5 @@
 import { Inject, Injectable } from "@angular/core";
 import { Socket } from 'ngx-socket-io';
-import * as lodash from 'lodash';
 
 @Injectable()
 export class SmartNodeSocket extends Socket {
