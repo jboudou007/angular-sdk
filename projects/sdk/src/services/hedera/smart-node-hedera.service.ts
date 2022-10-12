@@ -311,8 +311,8 @@ export class SmartNodeHederaService {
                   break;
                 case 'hsuite':
                   fee = hbarAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
-                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(8).toNumber())
-                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(8).toNumber());     
+                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
+                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
                   break;
               }
             }
@@ -375,8 +375,8 @@ export class SmartNodeHederaService {
                   break;
                 case 'hsuite':
                   fee = hbarAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
-                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(8).toNumber())
-                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(8).toNumber());     
+                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
+                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
                   break;
               }
             }
