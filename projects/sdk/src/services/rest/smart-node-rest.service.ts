@@ -17,10 +17,7 @@ export class SmartNodeRestService {
 
         response.forEach((data: any) => {
           data.image = `${node.url}/${data.image}`;
-
-          data.launchpad.forEach((round: any) => {
-            round.header = `${node.url}/${round.header}`;
-          });
+          data.launchpad.header = data.launchpad.header ? `${node.url}/${data.launchpad.header}` : null;
         });
 
         resolve({
