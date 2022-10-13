@@ -9,6 +9,23 @@ export class SmartNodeRestService {
     private smartNodeNetworkService: SmartNodeNetworkService
   ) {}
 
+  public async calculateLaunchpadDiscount(launchpadId: string, accountId: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`launchpad/${launchpadId}/discount/${accountId}`);
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'calculateLaunchpadDiscount',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadLaunchpads(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
