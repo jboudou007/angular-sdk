@@ -343,7 +343,7 @@ export class SmartNodeHederaService {
   public async launchpadNftTransaction(
     launchpadDocument: any,
     senderId: string,
-    hbarAmount: Decimal,
+    priceAmount: Decimal,
     serialNumber: number,
     tokenId: string,
     memo?: string,
@@ -354,9 +354,21 @@ export class SmartNodeHederaService {
       try {
         let nftId = new NftId(TokenId.fromString(tokenId), serialNumber);
         let transaction = new TransferTransaction()
-        .addHbarTransfer(senderId, Hbar.from(-hbarAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar))
-        .addHbarTransfer(launchpadDocument.treasuryId, Hbar.from(hbarAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar))
         .addNftTransfer(nftId, launchpadDocument.walletId, senderId);
+
+        if(launchpadDocument.buy_with_token) {
+          let priceAmountForToken = new Decimal(priceAmount)
+            .times(10 ** launchpadDocument.buy_with_token.decimals)
+            .toDecimalPlaces(launchpadDocument.buy_with_token.decimals).toNumber();
+            
+          transaction
+          .addTokenTransfer(launchpadDocument.buy_with_token.id, senderId, -priceAmountForToken)
+          .addTokenTransfer(launchpadDocument.buy_with_token.id, launchpadDocument.treasuryId, priceAmountForToken);
+        } else {
+          transaction
+          .addHbarTransfer(senderId, Hbar.from(-priceAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar))
+          .addHbarTransfer(launchpadDocument.treasuryId, Hbar.from(priceAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar));
+        }
 
         if(memo) {
           transaction.setTransactionMemo(memo);
@@ -366,20 +378,36 @@ export class SmartNodeHederaService {
           let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
 
           Object.keys(fees.percentage).forEach(key => {
-            let fee = null;
+            if(launchpadDocument.buy_with_token) {
+              if(fees.fixed[key]) {
+                switch(key) {
+                  case 'hbar':
+                    transaction.addHbarTransfer(senderId, -fees.fixed[key].toDecimalPlaces(8).toNumber())
+                    .addHbarTransfer(fees.wallet, fees.fixed[key].toDecimalPlaces(8).toNumber());
+                    break;
+                  case 'hsuite':
+                    let hsuiteFixedFee = new Decimal(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
+                    transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFixedFee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
+                    .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFixedFee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
+                    break;
+                }
+              }
+            } else {
+              let fee = null;
 
-            if(fees.percentage[key]) {
-              switch(key) {
-                case 'hbar':
-                  fee = hbarAmount.times(fees.percentage[key]);
-                  transaction.addHbarTransfer(senderId, -fee.toDecimalPlaces(8).toNumber())
-                  .addHbarTransfer(fees.wallet, fee.toDecimalPlaces(8).toNumber());
-                  break;
-                case 'hsuite':
-                  fee = hbarAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
-                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
-                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
-                  break;
+              if(fees.percentage[key]) {
+                switch(key) {
+                  case 'hbar':
+                    fee = priceAmount.times(fees.percentage[key]);
+                    transaction.addHbarTransfer(senderId, -fee.toDecimalPlaces(8).toNumber())
+                    .addHbarTransfer(fees.wallet, fee.toDecimalPlaces(8).toNumber());
+                    break;
+                  case 'hsuite':
+                    fee = priceAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
+                    transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
+                    .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
+                    break;
+                }
               }
             }
           });
