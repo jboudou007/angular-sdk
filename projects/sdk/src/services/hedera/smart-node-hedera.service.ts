@@ -299,24 +299,26 @@ export class SmartNodeHederaService {
         if(fees) {
           let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
 
-          Object.keys(fees.percentage).forEach(key => {
-            let fee = null;
-
-            if(fees.percentage[key]) {
-              switch(key) {
-                case 'hbar':
-                  fee = hbarAmount.times(fees.percentage[key]);
-                  transaction.addHbarTransfer(senderId, -fee.toDecimalPlaces(8).toNumber())
-                  .addHbarTransfer(fees.wallet, fee.toDecimalPlaces(8).toNumber());
-                  break;
-                case 'hsuite':
-                  fee = hbarAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
-                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
-                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
-                  break;
+          if(this.utilities.hsuite.id != tokenId) {
+            Object.keys(fees.percentage).forEach(key => {
+              let fee = null;
+  
+              if(fees.percentage[key]) {
+                switch(key) {
+                  case 'hbar':
+                    fee = hbarAmount.times(fees.percentage[key]);
+                    transaction.addHbarTransfer(senderId, -fee.toDecimalPlaces(8).toNumber())
+                    .addHbarTransfer(fees.wallet, fee.toDecimalPlaces(8).toNumber());
+                    break;
+                  case 'hsuite':
+                    fee = hbarAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
+                    transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
+                    .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
+                    break;
+                }
               }
-            }
-          });
+            });
+          }
         }
 
         let transBytes = await this.makeBytes(transaction, senderId);
