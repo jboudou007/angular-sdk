@@ -382,8 +382,9 @@ export class SmartNodeHederaService {
               if(fees.fixed[key]) {
                 switch(key) {
                   case 'hbar':
-                    transaction.addHbarTransfer(senderId, -fees.fixed[key].toDecimalPlaces(8).toNumber())
-                    .addHbarTransfer(fees.wallet, fees.fixed[key].toDecimalPlaces(8).toNumber());
+                    let hbarFixedFee = new Decimal(fees.fixed[key]).toDecimalPlaces(8).toNumber();
+                    transaction.addHbarTransfer(senderId, -hbarFixedFee)
+                    .addHbarTransfer(fees.wallet, hbarFixedFee);
                     break;
                   case 'hsuite':
                     let hsuiteFixedFee = new Decimal(fees.fixed[key]).times(10 ** hsuiteInfos.decimals);
