@@ -395,19 +395,18 @@ export class SmartNodeHederaService {
               }
             });
           } else {
-            let fee = null;
-
             Object.keys(fees.percentage).forEach(key => {
               switch(key) {
                 case 'hbar':
-                  fee = priceAmount.times(fees.percentage[key]);
-                  transaction.addHbarTransfer(senderId, -fee.toDecimalPlaces(8).toNumber())
-                  .addHbarTransfer(fees.wallet, fee.toDecimalPlaces(8).toNumber());
+                  let hbarFixedFee = priceAmount.times(fees.percentage[key]).toDecimalPlaces(8).toNumber();
+                  transaction.addHbarTransfer(senderId, -hbarFixedFee)
+                  .addHbarTransfer(fees.wallet, hbarFixedFee);
                   break;
                 case 'hsuite':
-                  fee = priceAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
-                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
-                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
+                  let hsuiteFixedFee = priceAmount.div(hsuiteInfos.price).times(fees.percentage[key])
+                    .times(10 ** hsuiteInfos.decimals).toDecimalPlaces(hsuiteInfos.decimals).toNumber();
+                  transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFixedFee)
+                  .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFixedFee);
                   break;
               }
             });
