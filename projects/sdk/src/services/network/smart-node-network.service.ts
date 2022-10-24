@@ -37,7 +37,7 @@ export class SmartNodeNetworkService {
       {
         "operator": "0.0.1027979",
         "publicKey": "302a300506032b6570032100efc5eed0ba886f711c261ffd816aef05d70bc5c894037fc3ae0b354e26a243f6",
-        "url": "https://mainet-sn4.hbarsuite.network"
+        "url": "https://mainnet-sn4.hbarsuite.network"
       }
     ],
     testnet: [
