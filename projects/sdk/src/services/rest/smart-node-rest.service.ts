@@ -84,6 +84,38 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getNftPoolsCollections(): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`nft-pools/collections`);
+
+        resolve({
+          function: 'getNftPoolsCollections',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
+  public async getNftPoolsCollection(consensus_timestamp: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`nft-pools/collection/${consensus_timestamp}`);
+
+        resolve({
+          function: 'getNftPoolsCollection',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getUtilities(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
