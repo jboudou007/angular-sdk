@@ -144,13 +144,14 @@ export class SmartNodeRestService {
     });
   }
 
-  public async getAccountBalance(accountId: string): Promise<any> {
+  public async getAccountBalance(accountId: string, tokenId?: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
         let response = await this.smartNodeNetworkService.getApiEndpoint(
           `wallets/balance`,
           { params: {
-            accountId: accountId
+            accountId: accountId,
+            tokenId: tokenId
           } } 
         );
 
