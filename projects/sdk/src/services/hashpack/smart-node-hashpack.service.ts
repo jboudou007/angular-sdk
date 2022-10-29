@@ -128,7 +128,7 @@ export class SmartNodeHashPackService {
     });
   }
 
-  public async sendTransaction(transaction: any, accountId: string, returnTransaction: boolean = true) {
+  public async sendTransaction(transaction: any, accountId: string, returnTransaction: boolean = true, hideNft: boolean = true) {
     return new Promise(async (resolve, reject) => {
       try {
         const transactionHashPack: MessageTypes.Transaction = {
@@ -138,7 +138,7 @@ export class SmartNodeHashPackService {
           metadata: {
             accountToSign: accountId,
             returnTransaction: returnTransaction,
-            hideNft: true
+            hideNft: hideNft
           }
         };
 
