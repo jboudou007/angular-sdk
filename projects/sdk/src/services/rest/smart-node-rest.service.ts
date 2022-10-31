@@ -352,6 +352,27 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getNftForHolder(accountId: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `wallets/nfts`,
+          { params: {
+            accountId: accountId
+          } }          
+        );
+
+        resolve({
+          function: 'getNftForHolder',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getTokenChainInfos(tokenId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
