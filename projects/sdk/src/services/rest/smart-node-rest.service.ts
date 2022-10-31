@@ -159,7 +159,7 @@ export class SmartNodeRestService {
     return new Promise(async(resolve, reject) => {
       try {
         let response = await this.smartNodeNetworkService.getApiEndpoint(
-          `nft-pools/metadata/${CID}`,
+          `nft-pools/metadata/${encodeURIComponent(CID)}`,
         );
 
         resolve({
