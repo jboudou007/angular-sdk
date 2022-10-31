@@ -155,6 +155,24 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getNftMetadata(CID: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `nft-pools/metadata/${CID}`,
+        );
+
+        resolve({
+          function: 'getNftMetadata',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getAccountInfos(accountId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
