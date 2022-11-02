@@ -415,7 +415,8 @@ export class SmartNodeHederaService {
                 case 'hsuite':
                   let hsuiteFixedFee = null;
                   if(priceAmount.eq(0)) {
-                    hsuiteFixedFee = new Decimal(fees.fixed[key]).times(10 ** hsuiteInfos.decimals);
+                    hsuiteFixedFee = new Decimal(fees.fixed[key]).times(10 ** hsuiteInfos.decimals)
+                    .toDecimalPlaces(hsuiteInfos.decimals).toNumber();
                   } else {
                     hsuiteFixedFee = priceAmount.div(hsuiteInfos.price).times(fees.percentage[key])
                     .times(10 ** hsuiteInfos.decimals).toDecimalPlaces(hsuiteInfos.decimals).toNumber();
