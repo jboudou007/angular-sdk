@@ -311,9 +311,15 @@ export class SmartNodeHederaService {
                     .addHbarTransfer(fees.wallet, fee.toDecimalPlaces(8).toNumber());
                     break;
                   case 'hsuite':
-                    fee = hbarAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);
+                    if(hbarAmount.eq(0)) {
+                      fee = new Decimal(fees.fixed[key]).times(10 ** hsuiteInfos.decimals);;
+                    } else {
+                      fee = hbarAmount.div(hsuiteInfos.price).times(fees.percentage[key]).times(10 ** hsuiteInfos.decimals);  
+                    }
+
                     transaction.addTokenTransfer(this.utilities.hsuite.id, senderId, -fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber())
                     .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, fee.toDecimalPlaces(hsuiteInfos.decimals).toNumber());     
+
                     break;
                 }
               }
