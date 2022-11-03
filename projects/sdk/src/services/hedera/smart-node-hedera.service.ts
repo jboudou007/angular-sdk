@@ -346,6 +346,42 @@ export class SmartNodeHederaService {
     });
   }
 
+  public async createNftPoolTransaction(
+    senderId: string,
+    returnTransaction?: boolean   
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let fees = (await this.smartNodeRestService.loadFees('nft_exchange')).data;
+        let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
+        let veHsuiteReward = new Decimal(fees.create.fixed.hbar).div(hsuiteInfos.price).times(0.1)
+        .times(10 ** hsuiteInfos.decimals).toDecimalPlaces(hsuiteInfos.decimals).toNumber();
+
+        let transaction = new TransferTransaction()
+        .addHbarTransfer(fees.wallet, new Hbar(fees.create.fixed.hbar))
+        .addHbarTransfer(senderId, new Hbar(-fees.create.fixed.hbar))
+        .addTokenTransfer(this.utilities.veHsuite.id, senderId, veHsuiteReward)
+        .addTokenTransfer(this.utilities.veHsuite.id, this.utilities.veHsuite.treasury, -veHsuiteReward)
+
+        let transBytes = await this.makeBytes(transaction, senderId);
+        let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
+
+        let responseData: any = {
+          response: response,
+          receipt: null
+        }
+
+        if (response.success && returnTransaction === false) {
+          responseData.receipt = TransactionReceipt.fromBytes(response.receipt as Uint8Array);
+        }
+
+        resolve(responseData);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   public async launchpadNftTransaction(
     launchpadDocument: any,
     senderId: string,
