@@ -394,6 +394,27 @@ export class SmartNodeRestService {
     });
   }
 
+  public async checkIfWhitelisted(token_id: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try{
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `nft-pools/collections/whitelisted/${ token_id }`,
+          { params: {
+            token_id: token_id
+          } }
+        );
+
+        resolve({
+          function: 'checkIfWhitelisted',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);          
+      }
+    });
+  }
+
   public async calculatePoolPrice(amount: string, baseTokenId: string, swapTokenId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
