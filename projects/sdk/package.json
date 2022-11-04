@@ -1,6 +1,7 @@
 {
   "name": "@hsuite/angular-sdk",
-  "version": "1.0.50",
+
+  "version": "1.0.66",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HbarSuite/angular-sdk.git"

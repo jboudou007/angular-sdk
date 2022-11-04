@@ -284,6 +284,41 @@ export class SmartNodeSdkService {
     });
   }
 
+  public createNftPoolTransaction(
+    senderId: string,
+    returnTransaction?: boolean    
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().createNftPoolTransaction(
+          senderId,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+
+          this.getSocketsService().sendMessageToSmartNodes({
+            type: 'createNftPool',
+            signedTransaction: signedTransaction
+          }, 'launchpadBuy');
+
+          resolve({
+            status: 'SUCCESS',
+            payload: responseData
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public createDaoTransaction(
     daoTokenId: string,
     senderId: string,

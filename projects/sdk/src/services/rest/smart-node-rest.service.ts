@@ -155,6 +155,24 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getNftMetadata(CID: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `nft-pools/metadata/${encodeURIComponent(CID)}`,
+        );
+
+        resolve({
+          function: 'getNftMetadata',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getAccountInfos(accountId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -238,7 +256,7 @@ export class SmartNodeRestService {
   }
 
   public async loadFees(
-    fee: 'tokens' | 'launchpads' | 'daos' | 'proposals' | 'votes' | 'multisig' | 'marketplace' | 'swap' | 'join' | 'exit'
+    fee: 'tokens' | 'launchpads' | 'daos' | 'multisig' | 'nft_exchange' | 'exchange'
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
