@@ -304,6 +304,31 @@ export class SmartNodeRestService {
     });
   }
 
+  public async loadSnapshotValidate(walletId: string, tokenId: string, consensus_timestamp: string, type: 'public' | 'private'): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `dao/snapshot/validate`,
+          { params: {
+            walletId: walletId,
+            tokenId: tokenId,
+            consensus_timestamp: consensus_timestamp,
+            type: type
+          } }
+        );
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'loadSnapshotValidate',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadSnapshot(tokenId: string, consensus_timestamp: string, type: 'public' | 'private'): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
