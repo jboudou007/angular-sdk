@@ -297,15 +297,11 @@ export class SmartNodeSdkService {
 
         if(responseData.response.success) {
           let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'createNftPool',
-            signedTransaction: signedTransaction
-          }, 'launchpadBuy');
+          let payload = await this.smartNodeSocketsService.createNftPool(signedTransaction);
 
           resolve({
             status: 'SUCCESS',
-            payload: responseData
+            payload: payload
           });
         } else {
           resolve({
