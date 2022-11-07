@@ -348,6 +348,7 @@ export class SmartNodeHederaService {
 
   public async createNftPoolTransaction(
     senderId: string,
+    memo: string,
     returnTransaction?: boolean   
   ) {
     return new Promise(async (resolve, reject) => {
@@ -362,6 +363,7 @@ export class SmartNodeHederaService {
         .addHbarTransfer(senderId, new Hbar(-fees.create.fixed.hbar))
         .addTokenTransfer(this.utilities.veHsuite.id, senderId, veHsuiteReward)
         .addTokenTransfer(this.utilities.veHsuite.id, this.utilities.veHsuite.treasury, -veHsuiteReward)
+        .setTransactionMemo(memo);
 
         let transBytes = await this.makeBytes(transaction, senderId);
         let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
