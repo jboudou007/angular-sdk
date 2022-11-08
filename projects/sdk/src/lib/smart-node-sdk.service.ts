@@ -286,20 +286,20 @@ export class SmartNodeSdkService {
 
   public createNftPoolTransaction(
     senderId: string,
-    nftSerialNumber?: number,
+    collectionId: number,
     returnTransaction?: boolean    
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
       try {
         let responseData: any = await this.getHederaService().createNftPoolTransaction(
           senderId,
-          `nft serial_number: ${nftSerialNumber}`,
+          `new pool for collection: ${collectionId}`,
           returnTransaction
         );
 
         if(responseData.response.success) {
           let signedTransaction = responseData.response.signedTransaction;
-          let payload = await this.smartNodeSocketsService.createNftPool(signedTransaction, nftSerialNumber,);
+          let payload = await this.smartNodeSocketsService.createNftPool(signedTransaction, collectionId);
 
           resolve({
             status: 'SUCCESS',
