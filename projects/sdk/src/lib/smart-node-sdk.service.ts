@@ -286,7 +286,7 @@ export class SmartNodeSdkService {
 
   public createNftPoolTransaction(
     senderId: string,
-    collectionId: number,
+    collectionId: string,
     returnTransaction?: boolean    
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {

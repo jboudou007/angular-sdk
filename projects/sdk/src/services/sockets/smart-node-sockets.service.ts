@@ -136,7 +136,7 @@ export class SmartNodeSocketsService {
     });
   }
 
-  async createNftPool(signedTransaction: any, collectionId: number): Promise<any> {
+  async createNftPool(signedTransaction: any, collectionId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
         this.mainSocket.fromOneTimeEvent('createNftPool').then((response: {status: string, payload: any, error: string}) => {
