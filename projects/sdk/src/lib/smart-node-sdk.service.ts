@@ -287,7 +287,9 @@ export class SmartNodeSdkService {
   public createNftPoolTransaction(
     senderId: string,
     collectionId: string,
-    returnTransaction?: boolean    
+    pricing: { fee: number, spotPrice: number, bondingCurve: 'linear' | 'exponential', delta: number},
+    nftList: Array<string>,
+    returnTransaction?: boolean
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -299,7 +301,12 @@ export class SmartNodeSdkService {
 
         if(responseData.response.success) {
           let signedTransaction = responseData.response.signedTransaction;
-          let payload = await this.smartNodeSocketsService.createNftPool(signedTransaction, collectionId);
+          let payload = await this.smartNodeSocketsService.createNftPool(
+            signedTransaction, 
+            collectionId,
+            pricing,
+            nftList
+          );
 
           resolve({
             status: 'SUCCESS',
