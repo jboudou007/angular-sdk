@@ -324,6 +324,47 @@ export class SmartNodeSdkService {
     });
   }
 
+  public joinNftPoolTransaction(
+    senderId: string,
+    poolId: string,
+    nftList: Array<any>,
+    amount: Decimal,
+    type: 'hbar' | 'hsuite',
+    returnTransaction?: boolean
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().joinNftPoolTransaction(
+          senderId,
+          poolId,
+          nftList,
+          amount,
+          type,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+          let payload = await this.smartNodeSocketsService.joinNftPool(
+            signedTransaction
+          );
+
+          resolve({
+            status: 'SUCCESS',
+            payload: payload
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public createDaoTransaction(
     daoTokenId: string,
     senderId: string,
