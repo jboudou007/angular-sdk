@@ -132,6 +132,22 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getNftPoolsForUser(serialNumber: number): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`nft-pools/collection/pools/user/${serialNumber}`);
+
+        resolve({
+          function: 'getNftPoolsForUser',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getUtilities(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
