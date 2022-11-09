@@ -148,6 +148,35 @@ export class SmartNodeRestService {
     });
   }
 
+  public async calculateNftPoolInjectionAmount(
+    nftList: Array<number>,
+    spotPrice: number,
+    delta: number,
+    bondingCurve: 'linear' | 'exponential'
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `collections/pools/inject/calculate`,
+          { params: {
+            nftList: nftList,
+            spotPrice: spotPrice,
+            delta: delta,
+            bondingCurve: bondingCurve
+          } }          
+        );
+
+        resolve({
+          function: 'calculateNftPoolInjectionAmount',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getUtilities(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
