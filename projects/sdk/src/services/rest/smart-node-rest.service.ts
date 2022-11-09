@@ -155,9 +155,9 @@ export class SmartNodeRestService {
     bondingCurve: 'linear' | 'exponential'
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
-      try {
+      try { 
         let response = await this.smartNodeNetworkService.getApiEndpoint(
-          `collections/pools/inject/calculate`,
+          `nft-pools/collections/pools/inject/calculate`,
           { params: {
             nftList: nftList,
             spotPrice: spotPrice,
