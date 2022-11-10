@@ -330,6 +330,7 @@ export class SmartNodeSdkService {
     nftList: Array<any>,
     amount: Decimal,
     type: 'hbar' | 'hsuite',
+    pricing: { fee: number, spotPrice: number, bondingCurve: 'linear' | 'exponential', delta: number},
     returnTransaction?: boolean
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
@@ -346,7 +347,8 @@ export class SmartNodeSdkService {
         if(responseData.response.success) {
           let signedTransaction = responseData.response.signedTransaction;
           let payload = await this.smartNodeSocketsService.joinNftPool(
-            signedTransaction
+            signedTransaction,
+            pricing,
           );
 
           resolve({
