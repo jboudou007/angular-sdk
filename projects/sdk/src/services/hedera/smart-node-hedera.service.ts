@@ -369,7 +369,7 @@ export class SmartNodeHederaService {
             .addHbarTransfer(poolId, new Hbar(amount.toNumber()))
             .addHbarTransfer(senderId, new Hbar(-amount.toNumber()))
             .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
-            .addTokenTransfer(this.utilities.hsuite.id, poolId, hsuiteFees.toNumber());
+            .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber());
             break;
           case 'hsuite':
             hsuiteFees = amount.times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
@@ -380,7 +380,7 @@ export class SmartNodeHederaService {
             .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteAmount)
             .addTokenTransfer(this.utilities.hsuite.id, poolId, hsuiteAmount)
             .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
-            .addTokenTransfer(this.utilities.hsuite.id, poolId, hsuiteFees.toNumber());
+            .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber());
             break;
         }
 
