@@ -373,8 +373,7 @@ export class SmartNodeHederaService {
             break;
           case 'hsuite':
             hsuiteFees = amount.times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
-            let hsuiteAmount = amount.div(hsuiteInfos.price)
-              .times(10 ** hsuiteInfos.decimals)
+            let hsuiteAmount = amount.times(10 ** hsuiteInfos.decimals)
               .toDecimalPlaces(hsuiteInfos.decimals).toNumber();
 
             transaction
