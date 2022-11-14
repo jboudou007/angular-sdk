@@ -168,7 +168,8 @@ export class SmartNodeSocketsService {
     signedTransaction: any, 
     collectionId: string,
     pricing: { fee: number, spotPrice: number, bondingCurve: 'linear' | 'exponential', delta: number},
-    nftList: Array<string>    
+    nftList: Array<string>,
+    type: 'hbar' | 'hsuite'
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -187,7 +188,8 @@ export class SmartNodeSocketsService {
           signedTransaction: signedTransaction,
           collectionId: collectionId,
           pricing: pricing,
-          nftList: nftList
+          nftList: nftList,
+          fungible_common: type
         });
       } catch(error) {
         reject(error);
