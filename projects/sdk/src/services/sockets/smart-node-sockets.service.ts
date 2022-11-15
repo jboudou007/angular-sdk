@@ -139,7 +139,9 @@ export class SmartNodeSocketsService {
 
   async joinNftPool(
     signedTransaction: any,
-    pricing: { fee: number, spotPrice: number, bondingCurve: 'linear' | 'exponential', delta: number}
+    pricing: { fee: number, spotPrice: number, bondingCurve: 'linear' | 'exponential', delta: number},
+    poolConsensusTimestamp: string,
+    collectionConsesusTimestamp: string
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -156,7 +158,9 @@ export class SmartNodeSocketsService {
         this.mainSocket.emit('joinNftPool', {
           type: 'joinNftPool',
           signedTransaction: signedTransaction,
-          pricing: pricing
+          pricing: pricing,
+          poolConsensusTimestamp: poolConsensusTimestamp,
+          collectionConsesusTimestamp: collectionConsesusTimestamp
         });
       } catch(error) {
         reject(error);

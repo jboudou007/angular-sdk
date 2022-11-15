@@ -329,6 +329,8 @@ export class SmartNodeSdkService {
   public joinNftPoolTransaction(
     senderId: string,
     poolId: string,
+    poolConsensusTimestamp: string,
+    collectionConsesusTimestamp: string,
     nftList: Array<any>,
     amount: Decimal,
     type: 'hbar' | 'hsuite',
@@ -350,7 +352,9 @@ export class SmartNodeSdkService {
           let signedTransaction = responseData.response.signedTransaction;
           let payload = await this.smartNodeSocketsService.joinNftPool(
             signedTransaction,
-            pricing
+            pricing,
+            poolConsensusTimestamp,
+            collectionConsesusTimestamp,
           );
 
           resolve({
