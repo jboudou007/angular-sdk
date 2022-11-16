@@ -375,7 +375,7 @@ export class SmartNodeHederaService {
             break;
           case 'hsuite':
             let hsuiteAmount = new Decimal(hsuiteTokens.balance).toDecimalPlaces(hsuiteInfos.decimals);
-            hsuiteFees = hsuiteAmount.times(fees.join.percentage.hsuite);
+            hsuiteFees = hsuiteAmount.times(fees.exit.percentage.hsuite);
 
             transaction
             .addTokenTransfer(this.utilities.hsuite.id, senderId, hsuiteAmount.toNumber())
