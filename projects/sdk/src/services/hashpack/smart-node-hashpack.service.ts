@@ -128,7 +128,7 @@ export class SmartNodeHashPackService {
     });
   }
 
-  public async sendTransaction(transaction: any, accountId: string, returnTransaction: boolean = true, hideNft: boolean = true) {
+  public async sendTransaction(transaction: any, accountId: string, returnTransaction: boolean = true, hideNft: boolean = false) {
     return new Promise(async (resolve, reject) => {
       try {
         const transactionHashPack: MessageTypes.Transaction = {

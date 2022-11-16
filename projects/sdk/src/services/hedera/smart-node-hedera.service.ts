@@ -356,7 +356,8 @@ export class SmartNodeHederaService {
         let fees = (await this.smartNodeRestService.loadFees('nft_exchange')).data;
         let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
         let poolBalance = (await this.smartNodeRestService.getAccountBalance(poolId)).data;
-        let type = poolBalance.tokens.find(token => token.id == this.utilities.hsuite.id) ? 'hsuite' : 'hbar';
+        let hsuiteTokens = poolBalance.tokens.find(token => token.tokenId == this.utilities.hsuite.id);
+        let type = hsuiteTokens ? 'hsuite' : 'hbar';
         let nftBalance = (await this.smartNodeRestService.getNftForHolder(poolId)).data;
 
         let transaction = new TransferTransaction();
@@ -373,10 +374,8 @@ export class SmartNodeHederaService {
             .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber());
             break;
           case 'hsuite':
-            let hsuiteTokens = poolBalance.tokens.find(token => token.id == this.utilities.hsuite.id);
-            let hsuiteAmount = new Decimal(hsuiteTokens.balance).div(10 ** hsuiteInfos.decimals)
-              .toDecimalPlaces(hsuiteInfos.decimals);
-            hsuiteFees = hsuiteAmount.times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
+            let hsuiteAmount = new Decimal(hsuiteTokens.balance).toDecimalPlaces(hsuiteInfos.decimals);
+            hsuiteFees = hsuiteAmount.times(fees.join.percentage.hsuite);
 
             transaction
             .addTokenTransfer(this.utilities.hsuite.id, senderId, hsuiteAmount.toNumber())
