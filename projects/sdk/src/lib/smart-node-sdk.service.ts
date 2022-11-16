@@ -373,6 +373,41 @@ export class SmartNodeSdkService {
     });
   }
 
+  public withdrawNftPoolTransaction(
+    senderId: string,
+    poolId: string,
+    returnTransaction?: boolean
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().withdrawNftPoolTransaction(
+          senderId,
+          poolId,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+          let payload = await this.smartNodeSocketsService.exitNftPool(
+            signedTransaction
+          );
+
+          resolve({
+            status: 'SUCCESS',
+            payload: payload
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public createDaoTransaction(
     daoTokenId: string,
     senderId: string,

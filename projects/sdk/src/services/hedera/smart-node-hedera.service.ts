@@ -346,6 +346,70 @@ export class SmartNodeHederaService {
     });
   }
 
+  public async withdrawNftPoolTransaction(
+    senderId: string,
+    poolId: string,
+    returnTransaction?: boolean
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let fees = (await this.smartNodeRestService.loadFees('nft_exchange')).data;
+        let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
+        let poolBalance = (await this.smartNodeRestService.getAccountBalance(poolId)).data;
+        let type = poolBalance.tokens.find(token => token.id == this.utilities.hsuite.id) ? 'hsuite' : 'hbar';
+        let nftBalance = (await this.smartNodeRestService.getNftForHolder(poolId)).data;
+
+        let transaction = new TransferTransaction();
+        let hsuiteFees = null;
+
+        switch(type) {
+          case 'hbar':
+            let hbarAmount = new Decimal(poolBalance.hbars._valueInTinybar).div(10 ** 8);
+            hsuiteFees = hbarAmount.div(hsuiteInfos.price).times(fees.exit.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
+            transaction
+            .addHbarTransfer(poolId, new Hbar(-hbarAmount.toNumber()))
+            .addHbarTransfer(senderId, new Hbar(hbarAmount.toNumber()))
+            .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber());
+            break;
+          case 'hsuite':
+            let hsuiteTokens = poolBalance.tokens.find(token => token.id == this.utilities.hsuite.id);
+            let hsuiteAmount = new Decimal(hsuiteTokens.balance).div(10 ** hsuiteInfos.decimals)
+              .toDecimalPlaces(hsuiteInfos.decimals);
+            hsuiteFees = hsuiteAmount.times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
+
+            transaction
+            .addTokenTransfer(this.utilities.hsuite.id, senderId, hsuiteAmount.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, poolId, -hsuiteAmount.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber());
+            break;
+        }
+
+        nftBalance.forEach(nft => {
+          let nftId = new NftId(TokenId.fromString(nft.token_id), nft.serial_number);
+          transaction.addNftTransfer(nftId, poolId, senderId);
+        });
+
+        let transBytes = await this.makeBytes(transaction, senderId);
+        let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
+
+        let responseData: any = {
+          response: response,
+          receipt: null
+        }
+
+        if (response.success && returnTransaction === false) {
+          responseData.receipt = TransactionReceipt.fromBytes(response.receipt as Uint8Array);
+        }
+
+        resolve(responseData);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   public async joinNftPoolTransaction(
     senderId: string,
     poolId: string,

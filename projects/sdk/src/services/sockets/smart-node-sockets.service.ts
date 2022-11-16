@@ -168,6 +168,31 @@ export class SmartNodeSocketsService {
     });
   }
 
+  async exitNftPool(
+    signedTransaction: any
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.mainSocket.fromOneTimeEvent('exitNftPool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.mainSocket.emit('exitNftPool', {
+          type: 'exitNftPool',
+          signedTransaction: signedTransaction
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   async createNftPool(
     signedTransaction: any, 
     collectionId: string,
