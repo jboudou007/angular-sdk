@@ -409,6 +409,95 @@ export class SmartNodeHederaService {
     });
   }
 
+  public async swapNftPoolTransaction(
+    senderId: string,
+    pool: {
+      wallet: string,
+      type: 'hbar' | 'hsuite',
+    },
+    nft: {
+      tokenId: string,
+      serialNumber: number
+    },
+    type: 'buy' | 'sell',
+    returnTransaction?: boolean
+  ) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let fees = (await this.smartNodeRestService.loadFees('nft_exchange')).data;
+        let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
+
+        let transaction = new TransferTransaction();
+        let hsuiteFees = null;
+        let nftId = new NftId(TokenId.fromString(nft.tokenId), nft.serialNumber);
+
+        let buyer, seller, amount = null;
+
+        switch(type) {
+          case 'buy':
+            buyer = senderId;
+            seller = pool.wallet;
+            amount = new Decimal(100); //TODO fetch the price from AMM buy/sell            
+            break;
+          case 'sell':
+            let collection = (await this.smartNodeRestService.findNftPoolsCollection(nft.tokenId)).data;
+            let roofPrice = collection.latest_statistics.day.stats.roof_price;
+            let collectionPool = collection.nft_pools_list.find(pool => pool.walletId == roofPrice.poolId);
+            amount = new Decimal(roofPrice.amount);
+            
+            pool = {
+              wallet: collectionPool.walletId,
+              type: collectionPool.settings.asset.fungible_common.toLowerCase()
+            };
+
+            buyer = pool.wallet;
+            seller = senderId;
+            break;
+        }
+
+        switch(pool.type) {
+          case 'hbar':
+            hsuiteFees = amount.div(hsuiteInfos.price).times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
+            transaction
+            .addHbarTransfer(seller, new Hbar(amount.toNumber()))
+            .addHbarTransfer(buyer, new Hbar(-amount.toNumber()))
+            .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber())          
+            .addNftTransfer(nftId, seller, buyer);
+            break;
+          case 'hsuite':
+            hsuiteFees = amount.times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
+            let hsuiteAmount = amount.times(10 ** hsuiteInfos.decimals)
+              .toDecimalPlaces(hsuiteInfos.decimals).toNumber();
+
+            transaction
+            .addTokenTransfer(this.utilities.hsuite.id, seller, hsuiteAmount)
+            .addTokenTransfer(this.utilities.hsuite.id, buyer, -hsuiteAmount)
+            .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber())
+            .addNftTransfer(nftId, seller, buyer);
+            break;
+        }
+
+        let transBytes = await this.makeBytes(transaction, senderId);
+        let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
+
+        let responseData: any = {
+          response: response,
+          receipt: null
+        }
+
+        if (response.success && returnTransaction === false) {
+          responseData.receipt = TransactionReceipt.fromBytes(response.receipt as Uint8Array);
+        }
+
+        resolve(responseData);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
   public async joinNftPoolTransaction(
     senderId: string,
     poolId: string,

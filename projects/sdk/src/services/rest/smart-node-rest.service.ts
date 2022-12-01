@@ -100,6 +100,22 @@ export class SmartNodeRestService {
     });
   }
 
+  public async findNftPoolsCollection(collectionId: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`nft-pools/collection/find/${collectionId}`);
+
+        resolve({
+          function: 'findNftPoolsCollection',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getNftPoolsCollection(consensus_timestamp: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -152,7 +168,9 @@ export class SmartNodeRestService {
     nftList: Array<number>,
     spotPrice: number,
     delta: number,
-    bondingCurve: 'linear' | 'exponential'
+    bondingCurve: 'linear' | 'exponential',
+    collectionId: string,
+    poolWalletId: string
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try { 
@@ -162,7 +180,9 @@ export class SmartNodeRestService {
             nftList: nftList,
             spotPrice: spotPrice,
             delta: delta,
-            bondingCurve: bondingCurve
+            bondingCurve: bondingCurve,
+            collectionId: collectionId,
+            poolWalletId: poolWalletId
           } }          
         );
 

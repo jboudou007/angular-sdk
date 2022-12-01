@@ -326,6 +326,51 @@ export class SmartNodeSdkService {
     });
   }
 
+  public swapNftPoolTransaction(
+    senderId: string,
+    pool: {
+      wallet: string,
+      type: 'hbar' | 'hsuite',
+    },
+    nft: {
+      tokenId: string,
+      serialNumber: number
+    },
+    type: 'buy' | 'sell',
+    returnTransaction?: boolean
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().swapNftPoolTransaction(
+          senderId,
+          pool,
+          nft,
+          type,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+          let payload = await this.smartNodeSocketsService.swapNftPool(
+            signedTransaction
+          );
+
+          resolve({
+            status: 'SUCCESS',
+            payload: payload
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public joinNftPoolTransaction(
     senderId: string,
     poolId: string,
