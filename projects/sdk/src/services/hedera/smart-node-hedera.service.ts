@@ -349,6 +349,8 @@ export class SmartNodeHederaService {
   public async withdrawNftPoolTransaction(
     senderId: string,
     poolId: string,
+    amount: number,
+    nfts: Array<any>,
     returnTransaction?: boolean
   ) {
     return new Promise(async (resolve, reject) => {
@@ -358,23 +360,21 @@ export class SmartNodeHederaService {
         let poolBalance = (await this.smartNodeRestService.getAccountBalance(poolId)).data;
         let hsuiteTokens = poolBalance.tokens.find(token => token.tokenId == this.utilities.hsuite.id);
         let type = hsuiteTokens ? 'hsuite' : 'hbar';
-        let nftBalance = (await this.smartNodeRestService.getNftForHolder(poolId)).data;
 
         let transaction = new TransferTransaction();
         let hsuiteFees = null;
 
         switch(type) {
           case 'hbar':
-            let hbarAmount = new Decimal(poolBalance.hbars._valueInTinybar).div(10 ** 8);
-            hsuiteFees = hbarAmount.div(hsuiteInfos.price).times(fees.exit.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
+            hsuiteFees = new Decimal(amount).div(hsuiteInfos.price).times(fees.exit.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
             transaction
-            .addHbarTransfer(poolId, new Hbar(-hbarAmount.toNumber()))
-            .addHbarTransfer(senderId, new Hbar(hbarAmount.toNumber()))
+            .addHbarTransfer(poolId, new Hbar(-amount))
+            .addHbarTransfer(senderId, new Hbar(amount))
             .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
             .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber());
             break;
           case 'hsuite':
-            let hsuiteAmount = new Decimal(hsuiteTokens.balance).toDecimalPlaces(hsuiteInfos.decimals);
+            let hsuiteAmount = new Decimal(amount).times(10 ** hsuiteInfos.decimals).toDecimalPlaces(hsuiteInfos.decimals);
             hsuiteFees = hsuiteAmount.times(fees.exit.percentage.hsuite);
 
             transaction
@@ -385,7 +385,7 @@ export class SmartNodeHederaService {
             break;
         }
 
-        nftBalance.forEach(nft => {
+        nfts.forEach(nft => {
           let nftId = new NftId(TokenId.fromString(nft.token_id), nft.serial_number);
           transaction.addNftTransfer(nftId, poolId, senderId);
         });

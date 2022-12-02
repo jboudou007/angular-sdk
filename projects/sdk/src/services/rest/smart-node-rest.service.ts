@@ -197,6 +197,39 @@ export class SmartNodeRestService {
     });
   }
 
+  public async calculateNftPoolWithdrawAmount(
+    nftList: Array<number>,
+    spotPrice: number,
+    delta: number,
+    bondingCurve: 'linear' | 'exponential',
+    collectionId: string,
+    poolWalletId: string
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try { 
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `nft-pools/collections/pools/withdraw/calculate`,
+          { params: {
+            nftList: nftList,
+            spotPrice: spotPrice,
+            delta: delta,
+            bondingCurve: bondingCurve,
+            collectionId: collectionId,
+            poolWalletId: poolWalletId
+          } }          
+        );
+
+        resolve({
+          function: 'calculateNftPoolWithdrawAmount',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async getUtilities(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {

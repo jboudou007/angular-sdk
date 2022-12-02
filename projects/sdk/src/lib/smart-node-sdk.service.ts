@@ -415,6 +415,8 @@ export class SmartNodeSdkService {
   public withdrawNftPoolTransaction(
     senderId: string,
     poolId: string,
+    amount: number,
+    nfts: Array<any>,
     returnTransaction?: boolean
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
@@ -422,6 +424,8 @@ export class SmartNodeSdkService {
         let responseData: any = await this.getHederaService().withdrawNftPoolTransaction(
           senderId,
           poolId,
+          amount,
+          nfts,
           returnTransaction
         );
 
