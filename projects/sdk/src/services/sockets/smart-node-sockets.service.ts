@@ -137,6 +137,39 @@ export class SmartNodeSocketsService {
     });
   }
 
+  async getNftPrice(
+    wallet: string,
+    poolId: string,
+    collectionId: string,
+    nft: number,
+    type: 'buy' | 'sell'
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.mainSocket.fromOneTimeEvent('getNftPrice').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.mainSocket.emit('getNftPrice', {
+          type: 'getNftPrice',
+          wallet: wallet,
+          poolId: poolId,
+          collectionId: collectionId,
+          nft: nft,
+          action: type
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   async swapNftPool(
     signedTransaction: any
   ): Promise<any> {

@@ -419,6 +419,11 @@ export class SmartNodeHederaService {
       tokenId: string,
       serialNumber: number
     },
+    poolFees: {
+      owner: string,
+      fee: number
+    },
+    amount: Decimal,
     type: 'buy' | 'sell',
     returnTransaction?: boolean
   ) {
@@ -431,25 +436,14 @@ export class SmartNodeHederaService {
         let hsuiteFees = null;
         let nftId = new NftId(TokenId.fromString(nft.tokenId), nft.serialNumber);
 
-        let buyer, seller, amount = null;
+        let buyer, seller = null;
 
         switch(type) {
           case 'buy':
             buyer = senderId;
-            seller = pool.wallet;
-            amount = new Decimal(100); //TODO fetch the price from AMM buy/sell            
+            seller = pool.wallet;       
             break;
           case 'sell':
-            let collection = (await this.smartNodeRestService.findNftPoolsCollection(nft.tokenId)).data;
-            let roofPrice = collection.latest_statistics.day.stats.roof_price;
-            let collectionPool = collection.nft_pools_list.find(pool => pool.walletId == roofPrice.poolId);
-            amount = new Decimal(roofPrice.amount);
-            
-            pool = {
-              wallet: collectionPool.walletId,
-              type: collectionPool.settings.asset.fungible_common.toLowerCase()
-            };
-
             buyer = pool.wallet;
             seller = senderId;
             break;
@@ -458,9 +452,12 @@ export class SmartNodeHederaService {
         switch(pool.type) {
           case 'hbar':
             hsuiteFees = amount.div(hsuiteInfos.price).times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
+
             transaction
             .addHbarTransfer(seller, new Hbar(amount.toNumber()))
             .addHbarTransfer(buyer, new Hbar(-amount.toNumber()))
+            .addHbarTransfer(poolFees.owner, new Hbar(amount.times(poolFees.fee).toNumber()))
+            .addHbarTransfer(buyer, new Hbar(-amount.times(poolFees.fee).toNumber()))     
             .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
             .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber())          
             .addNftTransfer(nftId, seller, buyer);
@@ -468,11 +465,13 @@ export class SmartNodeHederaService {
           case 'hsuite':
             hsuiteFees = amount.times(fees.join.percentage.hsuite).times(10 ** hsuiteInfos.decimals);
             let hsuiteAmount = amount.times(10 ** hsuiteInfos.decimals)
-              .toDecimalPlaces(hsuiteInfos.decimals).toNumber();
+              .toDecimalPlaces(hsuiteInfos.decimals);
 
             transaction
-            .addTokenTransfer(this.utilities.hsuite.id, seller, hsuiteAmount)
-            .addTokenTransfer(this.utilities.hsuite.id, buyer, -hsuiteAmount)
+            .addTokenTransfer(this.utilities.hsuite.id, seller, hsuiteAmount.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, buyer, -hsuiteAmount.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, poolFees.owner, hsuiteAmount.times(poolFees.fee).toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, buyer, -hsuiteAmount.times(poolFees.fee).toNumber())
             .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
             .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber())
             .addNftTransfer(nftId, seller, buyer);

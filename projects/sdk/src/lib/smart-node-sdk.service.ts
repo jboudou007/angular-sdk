@@ -336,6 +336,11 @@ export class SmartNodeSdkService {
       tokenId: string,
       serialNumber: number
     },
+    fees: {
+      owner: string,
+      fee: number
+    },  
+    amount: Decimal,
     type: 'buy' | 'sell',
     returnTransaction?: boolean
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
@@ -345,6 +350,8 @@ export class SmartNodeSdkService {
           senderId,
           pool,
           nft,
+          fees,
+          amount,
           type,
           returnTransaction
         );
