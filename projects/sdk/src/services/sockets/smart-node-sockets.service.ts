@@ -137,7 +137,7 @@ export class SmartNodeSocketsService {
     });
   }
 
-  async getNftPrice(
+  async reserveNftPrice(
     wallet: string,
     poolId: string,
     collectionId: string,
@@ -146,7 +146,7 @@ export class SmartNodeSocketsService {
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        this.mainSocket.fromOneTimeEvent('getNftPrice').then((response: {status: string, payload: any, error: string}) => {
+        this.mainSocket.fromOneTimeEvent('reserveNftPrice').then((response: {status: string, payload: any, error: string}) => {
           if(response.status == 'success') {
             resolve(response.payload);
           } else {
@@ -156,13 +156,48 @@ export class SmartNodeSocketsService {
           reject(error);
         });
 
-        this.mainSocket.emit('getNftPrice', {
-          type: 'getNftPrice',
+        this.mainSocket.emit('reserveNftPrice', {
+          type: 'reserveNftPrice',
           wallet: wallet,
           poolId: poolId,
           collectionId: collectionId,
           nft: nft,
           action: type
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
+  async releaseNftPrice(
+    wallet: string,
+    poolId: string,
+    collectionId: string,
+    nft: number,
+    type: 'buy' | 'sell',
+    timestamp: string
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.mainSocket.fromOneTimeEvent('releaseNftPrice').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.mainSocket.emit('releaseNftPrice', {
+          type: 'releaseNftPrice',
+          wallet: wallet,
+          poolId: poolId,
+          collectionId: collectionId,
+          nft: nft,
+          action: type,
+          timestamp: timestamp
         });
       } catch(error) {
         reject(error);
