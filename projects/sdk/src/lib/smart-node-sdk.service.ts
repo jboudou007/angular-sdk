@@ -342,6 +342,7 @@ export class SmartNodeSdkService {
     },  
     amount: Decimal,
     type: 'buy' | 'sell',
+    timestamp: string,
     returnTransaction?: boolean
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
@@ -359,7 +360,8 @@ export class SmartNodeSdkService {
         if(responseData.response.success) {
           let signedTransaction = responseData.response.signedTransaction;
           let payload = await this.smartNodeSocketsService.swapNftPool(
-            signedTransaction
+            signedTransaction,
+            timestamp
           );
 
           resolve({

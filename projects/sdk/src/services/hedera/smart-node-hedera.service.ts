@@ -471,9 +471,9 @@ export class SmartNodeHederaService {
             .addTokenTransfer(this.utilities.hsuite.id, seller, hsuiteAmount.toNumber())
             .addTokenTransfer(this.utilities.hsuite.id, buyer, -hsuiteAmount.toNumber())
             .addTokenTransfer(this.utilities.hsuite.id, poolFees.owner, hsuiteAmount.times(poolFees.fee).toNumber())
-            .addTokenTransfer(this.utilities.hsuite.id, buyer, -hsuiteAmount.times(poolFees.fee).toNumber())
-            .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteAmount.times(poolFees.fee).toNumber())
             .addTokenTransfer(this.utilities.hsuite.id, fees.wallet, hsuiteFees.toNumber())
+            .addTokenTransfer(this.utilities.hsuite.id, senderId, -hsuiteFees.toNumber())
             .addNftTransfer(nftId, seller, buyer);
             break;
         }

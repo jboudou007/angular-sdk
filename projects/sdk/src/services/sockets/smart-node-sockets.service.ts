@@ -206,7 +206,8 @@ export class SmartNodeSocketsService {
   }
 
   async swapNftPool(
-    signedTransaction: any
+    signedTransaction: any,
+    timestamp: string
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -222,7 +223,8 @@ export class SmartNodeSocketsService {
 
         this.mainSocket.emit('swapNftPool', {
           type: 'swapNftPool',
-          signedTransaction: signedTransaction
+          signedTransaction: signedTransaction,
+          timestamp: timestamp
         });
       } catch(error) {
         reject(error);
