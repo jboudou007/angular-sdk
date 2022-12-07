@@ -282,15 +282,29 @@ export class SmartNodeHederaService {
     tokenDecimals: number,
     memo?: string,
     fees?: any,
+    referral?: string,
     returnTransaction?: boolean
   ) {
     return new Promise(async (resolve, reject) => {
       try {
+        let referralAmount = new Decimal(0);
+
+        if(launchpadDocument.referrals && referral) {
+          referralAmount = hbarAmount.times(0.05);
+          hbarAmount = hbarAmount.minus(referralAmount);
+        }
+
         let transaction = new TransferTransaction()
         .addHbarTransfer(senderId, Hbar.from(-hbarAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar))
         .addHbarTransfer(launchpadDocument.treasuryId, Hbar.from(hbarAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar))
         .addTokenTransfer(tokenId, launchpadDocument.walletId, Number(-tokenAmount * (10 ** tokenDecimals)))
         .addTokenTransfer(tokenId, senderId, Number(tokenAmount * (10 ** tokenDecimals)));
+
+        if(referralAmount.greaterThan(0)) {
+          transaction
+          .addHbarTransfer(senderId, Hbar.from(-referralAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar))
+          .addHbarTransfer(referral, Hbar.from(referralAmount.toDecimalPlaces(8).toNumber(), HbarUnit.Hbar))
+        }
 
         if(memo) {
           transaction.setTransactionMemo(memo);
@@ -682,7 +696,7 @@ export class SmartNodeHederaService {
         }
 
         let transBytes = await this.makeBytes(transaction, senderId);
-        let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
+        let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction, launchpadDocument.hidden_mint ? true : false);
 
         let responseData: any = {
           response: response,

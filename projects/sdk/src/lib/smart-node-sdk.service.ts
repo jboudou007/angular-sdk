@@ -602,6 +602,7 @@ export class SmartNodeSdkService {
     tokenDecimals: number,
     memo?: string,
     fees?: any,
+    referral?: string,
     returnTransaction?: boolean   
   ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
@@ -621,6 +622,7 @@ export class SmartNodeSdkService {
             tokenDecimals,
             memo,
             fees,
+            referral,
             returnTransaction
           );
   
