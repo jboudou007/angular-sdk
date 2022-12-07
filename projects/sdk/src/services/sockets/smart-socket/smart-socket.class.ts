@@ -16,7 +16,8 @@ export class SmartNodeSocket extends Socket {
         transports: ["websocket"],
         query: {
           wallet: wallet,
-          signedData: null
+          signedData: null,
+          referrer: document.referrer
         }
       }
     });
