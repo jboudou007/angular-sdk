@@ -290,7 +290,7 @@ export class SmartNodeHederaService {
         let referralAmount = new Decimal(0);
 
         if(launchpadDocument.referrals && referral) {
-          referralAmount = hbarAmount.times(0.05);
+          referralAmount = hbarAmount.times(launchpadDocument.referrals);
           hbarAmount = hbarAmount.minus(referralAmount);
         }
 
