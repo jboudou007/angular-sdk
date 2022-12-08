@@ -100,6 +100,38 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getHsuiteHolders(): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`smart-node/hsuite/holders`);
+
+        resolve({
+          function: 'getHsuiteHolders',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
+  public async getHsuiteStaking(): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`smart-node/hsuite/staking`);
+
+        resolve({
+          function: 'getHsuiteHolders',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async findNftPoolsCollection(collectionId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
