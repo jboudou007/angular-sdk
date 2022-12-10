@@ -109,10 +109,16 @@ export class SmartNodeHederaService {
   ) {
     return new Promise(async (resolve, reject) => {
       try {
+        let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
+        let veHsuiteReward = new Decimal(fees.fixed.hbar).div(hsuiteInfos.price).times(0.1)
+        .times(10 ** hsuiteInfos.decimals).toDecimalPlaces(hsuiteInfos.decimals).toNumber();
+
         let transaction = new TransferTransaction()
         .addHbarTransfer(senderId, Hbar.from(-fees.fixed.hbar, HbarUnit.Hbar))
         .addHbarTransfer(fees.wallet, Hbar.from(fees.fixed.hbar, HbarUnit.Hbar))
-        .setTransactionMemo(`${daoTokenId}/${daoDocument.limited.councilNftId}`);
+        .setTransactionMemo(`${daoTokenId}/${daoDocument.limited.councilNftId}`)
+        .addTokenTransfer(this.utilities.veHsuite.id, senderId, veHsuiteReward)
+        .addTokenTransfer(this.utilities.veHsuite.id, this.utilities.veHsuite.treasury, -veHsuiteReward);
 
         let transBytes = await this.makeBytes(transaction, senderId);
         let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
@@ -143,10 +149,16 @@ export class SmartNodeHederaService {
   ) {
     return new Promise(async (resolve, reject) => {
       try {
+        let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
+        let veHsuiteReward = new Decimal(fees.fixed.hbar).div(hsuiteInfos.price).times(0.1)
+        .times(10 ** hsuiteInfos.decimals).toDecimalPlaces(hsuiteInfos.decimals).toNumber();
+
         let transaction = new TransferTransaction()
         .addHbarTransfer(senderId, Hbar.from(-fees.fixed.hbar, HbarUnit.Hbar))
         .addHbarTransfer(fees.wallet, Hbar.from(fees.fixed.hbar, HbarUnit.Hbar))
-        .setTransactionMemo(`${daoTokenId}/${proposalDocument.consensus_timestamp}/${proposalDocument.type}/${votedOption}`);
+        .setTransactionMemo(`${daoTokenId}/${proposalDocument.consensus_timestamp}/${proposalDocument.type}/${votedOption}`)
+        .addTokenTransfer(this.utilities.veHsuite.id, senderId, veHsuiteReward)
+        .addTokenTransfer(this.utilities.veHsuite.id, this.utilities.veHsuite.treasury, -veHsuiteReward);
 
         let transBytes = await this.makeBytes(transaction, senderId);
         let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
@@ -175,10 +187,16 @@ export class SmartNodeHederaService {
   ) {
     return new Promise(async (resolve, reject) => {
       try {
+        let hsuiteInfos = (await this.smartNodeRestService.getTokenInfos(this.utilities.hsuite.id)).data;
+        let veHsuiteReward = new Decimal(fees.fixed.hbar).div(hsuiteInfos.price).times(0.1)
+        .times(10 ** hsuiteInfos.decimals).toDecimalPlaces(hsuiteInfos.decimals).toNumber();
+
         let transaction = new TransferTransaction()
         .addHbarTransfer(senderId, Hbar.from(-fees.fixed.hbar, HbarUnit.Hbar))
         .addHbarTransfer(fees.wallet, Hbar.from(fees.fixed.hbar, HbarUnit.Hbar))
-        .setTransactionMemo(`${daoTokenId}`);
+        .setTransactionMemo(`${daoTokenId}`)
+        .addTokenTransfer(this.utilities.veHsuite.id, senderId, veHsuiteReward)
+        .addTokenTransfer(this.utilities.veHsuite.id, this.utilities.veHsuite.treasury, -veHsuiteReward);
 
         let transBytes = await this.makeBytes(transaction, senderId);
         let response: any = await this.smartNodeHashPackService.sendTransaction(transBytes, senderId, returnTransaction);
