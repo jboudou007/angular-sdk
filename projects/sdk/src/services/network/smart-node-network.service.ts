@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Node } from './interfaces/node.interface';
 import { Observable, Subject } from 'rxjs';
+import { Storage } from '@capacitor/storage';
 import axios from 'axios';
 
 @Injectable({
@@ -92,23 +93,26 @@ export class SmartNodeNetworkService {
     return this.nodeObservable;
   }
 
-  public async setNetwork(network: 'mainnet' | 'testnet' | 'local', node: string): Promise<boolean> {
+  public async setNetwork(network: 'mainnet' | 'testnet' | 'local', node: string, override: boolean = false): Promise<boolean> {
     return new Promise(async(resolve, reject) => {
       try {
         // as very first, we setup the core network...
         this.nodes = this.network[network];
         // setting a random node to use as default one...
         if(node == 'random') {
-          this.shuffleNode();
+          await this.shuffleNode(override);
         } else {
           this.node = this.getSpecificNode(Number(node));
         }
         
         // then we fetch the entire network of nodes, and we update our nodes array...
-        let whitelistedNetwork = await this.getNetwork();
-        this.nodes = whitelistedNetwork.data;
-
-        resolve(true);
+        try {
+          let whitelistedNetwork = await this.getNetwork();
+          this.nodes = whitelistedNetwork.data;          
+          resolve(true);
+        } catch(error) {
+          resolve(await this.setNetwork(network, node, true));
+        }
       } catch(error) {
         reject(error);
       }
@@ -140,16 +144,26 @@ export class SmartNodeNetworkService {
     this.node = node;
   }
 
-  public getRandomNode(): Node {
-    return this.nodes[Math.floor(Math.random() * this.nodes.length)];
+  public async getRandomNode(override: boolean): Promise<Node> {
+    let auth = await Storage.get({key: 'hashconnect.auth'});
+    let node = null;
+
+    if(auth.value && !override) {
+      let authStorage = JSON.parse(auth.value);
+      node = this.nodes.find(node => node.operator == authStorage.signedPayload.originalPayload.node);
+    } else {
+      node = this.nodes[Math.floor(Math.random() * this.nodes.length)];
+    }
+
+    return node;
   }
 
   public getSpecificNode(index: number): Node {
     return this.nodes[index];
   }
 
-  public shuffleNode(): void {
-    this.node = this.getRandomNode();
+  public async shuffleNode(override: boolean): Promise<void> {
+    this.node = await this.getRandomNode(override);
   }
 
   public setNodeFromActiveNodes(activeNodes: Array<Node>): void {
