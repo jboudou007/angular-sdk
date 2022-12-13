@@ -122,7 +122,7 @@ export class SmartNodeRestService {
         let response = await this.smartNodeNetworkService.getApiEndpoint(`smart-node/hsuite/staking`);
 
         resolve({
-          function: 'getHsuiteHolders',
+          function: 'getHsuiteStaking',
           node: this.smartNodeNetworkService.getCurrentNode(),
           data: response
         });
