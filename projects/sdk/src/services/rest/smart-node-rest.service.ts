@@ -26,6 +26,23 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getGameToken(): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`games/token`);
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'getGameToken',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadLaunchpads(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
