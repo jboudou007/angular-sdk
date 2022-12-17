@@ -43,6 +43,23 @@ export class SmartNodeRestService {
     });
   }
 
+  public async gameFlipCoin(transactionId: string): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`games/coin/flip/${transactionId}`);
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'gameFlipCoin',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async loadLaunchpads(): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
