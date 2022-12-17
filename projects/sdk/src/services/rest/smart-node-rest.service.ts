@@ -46,7 +46,11 @@ export class SmartNodeRestService {
   public async gameFlipCoin(transactionId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`games/coin/flip/${transactionId}`);
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`games/coin/flip`, 
+        { params: { 
+          transactionId: transactionId
+        } });
+        
         let node = this.smartNodeNetworkService.getCurrentNode();
 
         resolve({
