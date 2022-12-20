@@ -191,6 +191,32 @@ export class SmartNodeSdkService {
    * Launchpad
    * ----------------------------------------------
    */
+  async launchpadConfirm(transactionId: string, success: boolean, message: string) {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('launchpadConfirm')
+          .then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.getSocketsService().getMainSocket().emit('launchpadConfirm', {
+          type: 'launchpadConfirm',
+          transactionId: transactionId,
+          success: success,
+          message: message
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   async launchpadBuy(buyer: string, hbarAmount: Decimal, tokenId: string, referral: string) {
     return new Promise(async(resolve, reject) => {
       try {
