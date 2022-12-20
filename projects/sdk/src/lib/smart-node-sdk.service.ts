@@ -217,7 +217,8 @@ export class SmartNodeSdkService {
     });
   }
 
-  async launchpadBuy(buyer: string, hbarAmount: Decimal, tokenId: string, referral: string) {
+  async launchpadBuy(buyer: string, hbarAmount: Decimal, tokenId: string, referral: string)
+  : Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
       try {
         this.getSocketsService().getMainSocket().fromOneTimeEvent('launchpadBuy')
@@ -244,69 +245,31 @@ export class SmartNodeSdkService {
     });
   }
 
-  public launchpadNftTransaction(
-    launchpadDocument: any,
-    senderId: string,
-    hbarAmount: Decimal,
-    serialNumber: number,
-    tokenId: string,
-    memo?: string,
-    fees?: any,
-    returnTransaction?: boolean    
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+  public launchpadNftBuy(buyer: string, priceAmount: Decimal, tokenId: string)
+  : Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
     return new Promise(async(resolve, reject) => {
       try {
-        if(hbarAmount.lessThan(0)) {
-          resolve({
-            status: 'ERROR',
-            payload: `hbar amount must be a positive number`
-          });
-        } else {
-          let responseData: any = await this.getHederaService().launchpadNftTransaction(
-            launchpadDocument,
-            senderId,
-            hbarAmount,
-            serialNumber,
-            tokenId,
-            memo,
-            fees,
-            returnTransaction
-          );
-  
-          if(responseData.response.success) {
-            let signedTransaction = responseData.response.signedTransaction;
-  
-            this.getSocketsService().sendMessageToSmartNodes({
-              type: 'launchpadBuy',
-              signedTransaction: signedTransaction
-            }, 'launchpadBuy');
-  
-            resolve({
-              status: 'SUCCESS',
-              payload: responseData
-            });
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('launchpadNftBuy')
+          .then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
           } else {
-            resolve({
-              status: 'ERROR',
-              payload: responseData.response.error
-            });
-          } 
-        }
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.getSocketsService().getMainSocket().emit('launchpadNftBuy', {
+          type: 'launchpadNftBuy',
+          buyer: buyer,
+          priceAmount: priceAmount,
+          tokenId: tokenId
+        });
       } catch(error) {
         reject(error);
       }
     });
-  }
-
-  public async reserveNft(tokenId: string, walletId: string): Promise<number> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let serialNumber = await this.smartNodeSocketsService.reserveNft(tokenId, walletId);
-        resolve(serialNumber);
-      } catch(error) {
-        reject(error);
-      }
-    })
   }
   // ---------------------------------------------
 
