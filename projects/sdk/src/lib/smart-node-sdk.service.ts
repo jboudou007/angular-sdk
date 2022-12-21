@@ -351,39 +351,29 @@ export class SmartNodeSdkService {
     });
   }
 
-  public withdrawNftPoolTransaction(
+  async exitNftPool(
     senderId: string,
     poolId: string,
-    amount: number,
-    nfts: Array<any>,
-    returnTransaction?: boolean
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    nftList: Array<any>,
+  ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let responseData: any = await this.getHederaService().withdrawNftPoolTransaction(
-          senderId,
-          poolId,
-          amount,
-          nfts,
-          returnTransaction
-        );
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('exitNftPool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
 
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-          let payload = await this.smartNodeSocketsService.exitNftPool(
-            signedTransaction
-          );
-
-          resolve({
-            status: 'SUCCESS',
-            payload: payload
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        } 
+        this.getSocketsService().getMainSocket().emit('exitNftPool', {
+          type: 'exitNftPool',
+          senderId: senderId,
+          poolId: poolId,
+          nftList: nftList,
+        });
       } catch(error) {
         reject(error);
       }
