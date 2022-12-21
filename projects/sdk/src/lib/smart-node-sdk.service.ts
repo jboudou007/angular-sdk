@@ -278,7 +278,7 @@ export class SmartNodeSdkService {
    * NFT DEX
    * ----------------------------------------------
    */
-  public createNftPoolTransaction(
+  public createNftPool(
     senderId: string,
     collectionId: string,
     pricing: { fee: number, spotPrice: number, bondingCurve: 'linear' | 'exponential', delta: number},
@@ -380,54 +380,34 @@ export class SmartNodeSdkService {
     });
   }
 
-  public swapNftPoolTransaction(
+  async swapNftPool(
     senderId: string,
-    pool: {
-      wallet: string,
-      type: 'hbar' | 'hsuite',
-    },
+    poolId: string,
     nft: {
       tokenId: string,
       serialNumber: number
     },
-    fees: {
-      owner: string,
-      fee: number
-    },  
-    amount: Decimal,
-    type: 'buy' | 'sell',
-    timestamp: string,
-    returnTransaction?: boolean
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    swapType: 'buy' | 'sell'
+  ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let responseData: any = await this.getHederaService().swapNftPoolTransaction(
-          senderId,
-          pool,
-          nft,
-          fees,
-          amount,
-          type,
-          returnTransaction
-        );
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('swapNftPool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
 
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-          let payload = await this.smartNodeSocketsService.swapNftPool(
-            signedTransaction,
-            timestamp
-          );
-
-          resolve({
-            status: 'SUCCESS',
-            payload: payload
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        } 
+        this.getSocketsService().getMainSocket().emit('swapNftPool', {
+          type: 'swapNftPool',
+          senderId: senderId,
+          poolId: poolId,
+          nft: nft,
+          swapType: swapType
+        });
       } catch(error) {
         reject(error);
       }
