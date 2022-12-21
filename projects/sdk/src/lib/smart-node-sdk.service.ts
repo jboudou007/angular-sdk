@@ -188,7 +188,7 @@ export class SmartNodeSdkService {
 
   /**
    * ----------------------------------------------
-   * Launchpad
+   * LAUNCHPAD
    * ----------------------------------------------
    */
   async launchpadConfirm(transactionId: string, success: boolean, message: string) {
@@ -273,39 +273,11 @@ export class SmartNodeSdkService {
   }
   // ---------------------------------------------
 
-  public async mintLpNft(joinPool: {
-    baseToken: {
-      id: string,
-      amount: Decimal,
-      decimals: Decimal
-    },
-    swapToken: {
-      id: string,
-      amount: Decimal
-      decimals: Decimal
-    }
-  }): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let mintedNft = await this.smartNodeSocketsService.mintLpNft(joinPool);
-        resolve(mintedNft);
-      } catch(error) {
-        reject(error);
-      }
-    })
-  }
-
-  public async burnLpNft(serialNumber: number): Promise<TransactionReceipt> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let receipt = await this.smartNodeSocketsService.burnLpNft(serialNumber);
-        resolve(receipt);
-      } catch(error) {
-        reject(error);
-      }
-    })
-  }
-
+  /**
+   * ----------------------------------------------
+   * NFT DEX
+   * ----------------------------------------------
+   */
   public createNftPoolTransaction(
     senderId: string,
     collectionId: string,
@@ -330,6 +302,76 @@ export class SmartNodeSdkService {
             pricing,
             nftList,
             type
+          );
+
+          resolve({
+            status: 'SUCCESS',
+            payload: payload
+          });
+        } else {
+          resolve({
+            status: 'ERROR',
+            payload: responseData.response.error
+          });
+        } 
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
+  async joinNftPool(
+    senderId: string,
+    poolId: string,
+    nftList: Array<any>,
+    type: 'hbar' | 'hsuite',
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('joinNftPool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.getSocketsService().getMainSocket().emit('joinNftPool', {
+          type: 'joinNftPool',
+          senderId: senderId,
+          poolId: poolId,
+          nftList: nftList,
+          poolType: type
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
+  public withdrawNftPoolTransaction(
+    senderId: string,
+    poolId: string,
+    amount: number,
+    nfts: Array<any>,
+    returnTransaction?: boolean
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let responseData: any = await this.getHederaService().withdrawNftPoolTransaction(
+          senderId,
+          poolId,
+          amount,
+          nfts,
+          returnTransaction
+        );
+
+        if(responseData.response.success) {
+          let signedTransaction = responseData.response.signedTransaction;
+          let payload = await this.smartNodeSocketsService.exitNftPool(
+            signedTransaction
           );
 
           resolve({
@@ -401,87 +443,13 @@ export class SmartNodeSdkService {
       }
     });
   }
+  // ---------------------------------------------
 
-  public joinNftPoolTransaction(
-    senderId: string,
-    poolId: string,
-    nftList: Array<any>,
-    amount: Decimal,
-    type: 'hbar' | 'hsuite',
-    returnTransaction?: boolean
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let responseData: any = await this.getHederaService().joinNftPoolTransaction(
-          senderId,
-          poolId,
-          nftList,
-          amount,
-          type,
-          returnTransaction
-        );
-
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-          let payload = await this.smartNodeSocketsService.joinNftPool(
-            signedTransaction
-          );
-
-          resolve({
-            status: 'SUCCESS',
-            payload: payload
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        } 
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public withdrawNftPoolTransaction(
-    senderId: string,
-    poolId: string,
-    amount: number,
-    nfts: Array<any>,
-    returnTransaction?: boolean
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let responseData: any = await this.getHederaService().withdrawNftPoolTransaction(
-          senderId,
-          poolId,
-          amount,
-          nfts,
-          returnTransaction
-        );
-
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-          let payload = await this.smartNodeSocketsService.exitNftPool(
-            signedTransaction
-          );
-
-          resolve({
-            status: 'SUCCESS',
-            payload: payload
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        } 
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
+  /**
+   * ----------------------------------------------
+   * DAO
+   * ----------------------------------------------
+   */  
   public createDaoTransaction(
     daoTokenId: string,
     senderId: string,
@@ -613,6 +581,45 @@ export class SmartNodeSdkService {
         reject(error);
       }
     });
+  }
+  // ---------------------------------------------
+
+  /**
+   * ----------------------------------------------
+   * DEX
+   * ----------------------------------------------
+   */    
+  public async mintLpNft(joinPool: {
+    baseToken: {
+      id: string,
+      amount: Decimal,
+      decimals: Decimal
+    },
+    swapToken: {
+      id: string,
+      amount: Decimal
+      decimals: Decimal
+    }
+  }): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let mintedNft = await this.smartNodeSocketsService.mintLpNft(joinPool);
+        resolve(mintedNft);
+      } catch(error) {
+        reject(error);
+      }
+    })
+  }
+
+  public async burnLpNft(serialNumber: number): Promise<TransactionReceipt> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let receipt = await this.smartNodeSocketsService.burnLpNft(serialNumber);
+        resolve(receipt);
+      } catch(error) {
+        reject(error);
+      }
+    })
   }
 
   public async sendSwapTransaction(
@@ -779,4 +786,5 @@ export class SmartNodeSdkService {
       }
     })
   }
+  // ---------------------------------------------
 }
