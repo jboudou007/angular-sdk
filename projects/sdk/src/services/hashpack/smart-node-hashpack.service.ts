@@ -3,6 +3,7 @@ import { Storage } from '@capacitor/storage';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { Subject } from 'rxjs';
 import * as lodash from 'lodash';
+import { SmartNodeSocketsService } from '../sockets/smart-node-sockets.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,9 @@ export class SmartNodeHashPackService {
     accountIds: new Array<string>()
   }
 
-  constructor() {
+  constructor(
+    private smartNodeSocketsService: SmartNodeSocketsService
+  ) {
     this.hashconnect = new HashConnect();
 
     this.appMetadata = {
@@ -146,6 +149,13 @@ export class SmartNodeHashPackService {
           this.hashconnectData.topic,
           transactionHashPack
         );
+
+        this.smartNodeSocketsService.sendMessageToSmartNodes({
+          type: 'transactionEvent',
+          response: response,
+          transaction: transaction,
+          accountId: accountId
+        }, 'transactionEvent');
 
         resolve(response);
       } catch (error) {
