@@ -387,7 +387,8 @@ export class SmartNodeSdkService {
       tokenId: string,
       serialNumber: number
     },
-    swapType: 'buy' | 'sell'
+    swapType: 'buy' | 'sell',
+    buyWith: 'hsuite' | 'hbar' | 'both'
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -406,7 +407,8 @@ export class SmartNodeSdkService {
           senderId: senderId,
           poolId: poolId,
           nft: nft,
-          swapType: swapType
+          swapType: swapType,
+          buyWith: buyWith
         });
       } catch(error) {
         reject(error);
