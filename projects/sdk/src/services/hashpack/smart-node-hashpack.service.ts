@@ -145,19 +145,27 @@ export class SmartNodeHashPackService {
           }
         };
 
-        let response = await this.hashconnect.sendTransaction(
+        let hashconnectResponse = await this.hashconnect.sendTransaction(
           this.hashconnectData.topic,
           transactionHashPack
         );
 
-        this.smartNodeSocketsService.sendMessageToSmartNodes({
+        this.smartNodeSocketsService.getMainSocket().fromOneTimeEvent('transactionEvent').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(hashconnectResponse);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.smartNodeSocketsService.getMainSocket().emit('transactionEvent', {
           type: 'transactionEvent',
-          response: response,
+          response: hashconnectResponse,
           transaction: transaction,
           accountId: accountId
-        }, 'transactionEvent');
-
-        resolve(response);
+        });
       } catch (error) {
         reject(error);
       }
