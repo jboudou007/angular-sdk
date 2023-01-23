@@ -9,6 +9,64 @@ export class SmartNodeRestService {
     private smartNodeNetworkService: SmartNodeNetworkService
   ) {}
 
+  public async getNftCollectionCharts(
+    collectionId: string, 
+    type: 'hour' | 'day' | 'week',
+    from?: number,
+    limit?: number,
+    order?: 'asc' | 'desc'
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`nft-pools/collection/${collectionId}/chart/${type}`,
+        { params: { 
+          from: from,
+          limit: limit,
+          order: order
+        } });
+
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'getNftCollectionCharts',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
+  public async getNftPoolCharts(
+    poolId: string, 
+    type: 'hour' | 'day' | 'week',
+    from?: number,
+    limit?: number,
+    order?: 'asc' | 'desc'
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        let response = await this.smartNodeNetworkService.getApiEndpoint(`nft-pools/collection/pool/${poolId}/chart/${type}`,
+        { params: { 
+          from: from,
+          limit: limit,
+          order: order
+        } });
+
+        let node = this.smartNodeNetworkService.getCurrentNode();
+
+        resolve({
+          function: 'getNftPoolCharts',
+          node: node,
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async calculateLaunchpadDiscount(launchpadId: string, accountId: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
