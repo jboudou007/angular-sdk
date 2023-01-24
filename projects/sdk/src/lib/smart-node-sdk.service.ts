@@ -593,48 +593,34 @@ export class SmartNodeSdkService {
       }
     })
   }
-
-  public async sendSwapTransaction(
+  
+  async swapPool(
     senderId: string,
     swap: any,
-    routing: any,
-    fees?: Array<any>,
-    memo?: string,
-    returnTransaction?: boolean    
+    routing: any
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let responseData: any = await this.getHederaService().sendSwapTransaction(
-          senderId,
-          swap,
-          routing,
-          fees,
-          memo,
-          returnTransaction
-        );
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('swapPool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
 
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'exchangeSwapRequest',
-            signedTransaction: signedTransaction
-          }, 'exchangeSwapRequest');
-
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        }        
+        this.getSocketsService().getMainSocket().emit('swapPool', {
+          type: 'swapPool',
+          senderId: senderId,
+          swap: swap,
+          routing: routing
+        });
       } catch(error) {
         reject(error);
       }
-    })
+    });
   }
 
   public async exitPoolTransaction(
