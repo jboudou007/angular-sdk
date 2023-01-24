@@ -596,8 +596,7 @@ export class SmartNodeSdkService {
   
   async swapPool(
     senderId: string,
-    swap: any,
-    routing: any
+    swap: any
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -614,8 +613,7 @@ export class SmartNodeSdkService {
         this.getSocketsService().getMainSocket().emit('swapPool', {
           type: 'swapPool',
           senderId: senderId,
-          swap: swap,
-          routing: routing
+          swap: swap
         });
       } catch(error) {
         reject(error);
