@@ -43,47 +43,47 @@ export class SmartNodeNetworkService {
     ],
     testnet: [
       {
-        "operator": "0.0.47967256",
-        "publicKey": "302a300506032b6570032100b67830db2219b586d1c90966aab191dd563b24467a92cf19cddc5037baa697bf",
+        "operator": "0.0.3224",
+        "publicKey": "302a300506032b657003210057a3ffed480e36faf916e032435368f2eb9f951a6b58de1a64829336516fdcbf",
         "url": "https://testnet-sn1.hbarsuite.network"
       },
       {
-        "operator": "0.0.47967257",
-        "publicKey": "302a300506032b6570032100fbbb06fd81e06dd396a23cd01b40ed3dacb62ef86ecc8b27c379872882e25629",
+        "operator": "0.0.3243",
+        "publicKey": "302a300506032b6570032100c63e283249e90a6971d71e4c8a1f0bc26a7a7f61f8524c7866a1d8ff779a4ffb",
         "url": "https://testnet-sn2.hbarsuite.network"
       },
       {
-        "operator": "0.0.47967258",
-        "publicKey": "302a300506032b6570032100b6fa69608c3a6c7269f17f89f956fb0fef37104e76d09836f95720c30a6e0736",
+        "operator": "0.0.3266",
+        "publicKey": "302a300506032b65700321004530757c566a19027a02fc58c9387739661e727e09e1bc92f1ee2fcde530b391",
         "url": "https://testnet-sn3.hbarsuite.network"
       },
       {
-        "operator": "0.0.47967259",
-        "publicKey": "302a300506032b6570032100be801aa5424f4c468412a2bf871beda8f8db70f787b86a757026bc20b25d8270",
+        "operator": "0.0.3320",
+        "publicKey": "302a300506032b6570032100ecb67bdae47babf0d2df87f6b787562357550fac02a5e1ea44b22cc0c1ab2738",
         "url": "https://testnet-sn4.hbarsuite.network"
       }
     ],
     local: [
       {
-        "operator": "0.0.47967256",
-        "publicKey": "302a300506032b6570032100b67830db2219b586d1c90966aab191dd563b24467a92cf19cddc5037baa697bf",
+        "operator": "0.0.3224",
+        "publicKey": "302a300506032b657003210057a3ffed480e36faf916e032435368f2eb9f951a6b58de1a64829336516fdcbf",
         "url": "http://localhost:3001"
-      },      
+      },
       {
-        "operator": "0.0.47967257",
-        "publicKey": "302a300506032b6570032100fbbb06fd81e06dd396a23cd01b40ed3dacb62ef86ecc8b27c379872882e25629",
+        "operator": "0.0.3243",
+        "publicKey": "302a300506032b6570032100c63e283249e90a6971d71e4c8a1f0bc26a7a7f61f8524c7866a1d8ff779a4ffb",
         "url": "http://localhost:3002"
       },
       {
-        "operator": "0.0.47967258",
-        "publicKey": "302a300506032b6570032100b6fa69608c3a6c7269f17f89f956fb0fef37104e76d09836f95720c30a6e0736",
+        "operator": "0.0.3266",
+        "publicKey": "302a300506032b65700321004530757c566a19027a02fc58c9387739661e727e09e1bc92f1ee2fcde530b391",
         "url": "http://localhost:3003"
       },
       {
-        "operator": "0.0.47967259",
-        "publicKey": "302a300506032b6570032100be801aa5424f4c468412a2bf871beda8f8db70f787b86a757026bc20b25d8270",
+        "operator": "0.0.3320",
+        "publicKey": "302a300506032b6570032100ecb67bdae47babf0d2df87f6b787562357550fac02a5e1ea44b22cc0c1ab2738",
         "url": "http://localhost:3004"
-      }    
+      }   
     ]
   };
 
