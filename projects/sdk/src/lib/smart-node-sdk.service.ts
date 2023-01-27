@@ -621,7 +621,7 @@ export class SmartNodeSdkService {
     });
   }
 
-  async cretePool(
+  async createPool(
     senderId: string,
     params: {
       baseToken: {
