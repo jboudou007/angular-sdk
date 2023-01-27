@@ -621,6 +621,40 @@ export class SmartNodeSdkService {
     });
   }
 
+  async cretePool(
+    senderId: string,
+    params: {
+      baseToken: {
+        id: string
+      },
+      swapToken: {
+        id: string
+      }
+    }
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('cretePool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.getSocketsService().getMainSocket().emit('cretePool', {
+          type: 'cretePool',
+          senderId: senderId,
+          params: params
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public async exitPoolTransaction(
     senderId: string,
     poolWalletId: string,

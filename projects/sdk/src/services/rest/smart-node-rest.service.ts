@@ -374,29 +374,6 @@ export class SmartNodeRestService {
     });
   }
 
-  public async createPool(pool: any): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.postApiEndpoint(`pools/create`,
-        pool,
-        {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          timeout: 60000
-        });
-        
-        resolve({
-          function: 'createPool',
-          node: this.smartNodeNetworkService.getCurrentNode(),
-          data: response
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
   public async getNftMetadata(CID: string): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
