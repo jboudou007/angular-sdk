@@ -634,7 +634,7 @@ export class SmartNodeSdkService {
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        this.getSocketsService().getMainSocket().fromOneTimeEvent('cretePool').then((response: {status: string, payload: any, error: string}) => {
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('createPool').then((response: {status: string, payload: any, error: string}) => {
           if(response.status == 'success') {
             resolve(response.payload);
           } else {
@@ -644,8 +644,8 @@ export class SmartNodeSdkService {
           reject(error);
         });
 
-        this.getSocketsService().getMainSocket().emit('cretePool', {
-          type: 'cretePool',
+        this.getSocketsService().getMainSocket().emit('createPool', {
+          type: 'createPool',
           senderId: senderId,
           params: params
         });
