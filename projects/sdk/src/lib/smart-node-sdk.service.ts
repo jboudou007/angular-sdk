@@ -560,40 +560,7 @@ export class SmartNodeSdkService {
    * ----------------------------------------------
    * DEX
    * ----------------------------------------------
-   */    
-  public async mintLpNft(joinPool: {
-    baseToken: {
-      id: string,
-      amount: Decimal,
-      decimals: Decimal
-    },
-    swapToken: {
-      id: string,
-      amount: Decimal
-      decimals: Decimal
-    }
-  }): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let mintedNft = await this.smartNodeSocketsService.mintLpNft(joinPool);
-        resolve(mintedNft);
-      } catch(error) {
-        reject(error);
-      }
-    })
-  }
-
-  public async burnLpNft(serialNumber: number): Promise<TransactionReceipt> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let receipt = await this.smartNodeSocketsService.burnLpNft(serialNumber);
-        resolve(receipt);
-      } catch(error) {
-        reject(error);
-      }
-    })
-  }
-  
+   */  
   async swapPool(
     senderId: string,
     swap: any
@@ -655,6 +622,46 @@ export class SmartNodeSdkService {
     });
   }
 
+  public async joinPool(
+    senderId: string,
+    poolWalletId: string,
+    joinPool: {
+      baseToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      },
+      swapToken: {
+        id: string,
+        amount: Decimal,
+        decimals: number
+      }
+    }
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('joinPool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
+
+        this.getSocketsService().getMainSocket().emit('joinPool', {
+          type: 'swapPool',
+          senderId: senderId,
+          poolWalletId: poolWalletId,
+          joinPool: joinPool
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public async exitPoolTransaction(
     senderId: string,
     poolWalletId: string,
@@ -697,67 +704,6 @@ export class SmartNodeSdkService {
             type: 'exitPool',
             signedTransaction: signedTransaction
           }, 'exitPool');
-    
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error.message ?
-            responseData.response.error.message :
-            responseData.response.error
-          });
-        } 
-      } catch(error) {
-        reject(error);
-      }
-    })
-  }
-
-  public async joinPoolTransaction(
-    senderId: string,
-    poolWalletId: string,
-    joinPool: {
-      baseToken: {
-        id: string,
-        amount: Decimal,
-        decimals: number
-      },
-      swapToken: {
-        id: string,
-        amount: Decimal,
-        decimals: number
-      }
-    },
-    nft: {
-      tokenId: string,
-      serialNumber: number
-    },
-    memo?: string,
-    fees?: Array<any>,
-    returnTransaction?: boolean  
-  ): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let responseData: any = await this.getHederaService().joinPoolTransaction(
-          senderId,
-          poolWalletId,
-          joinPool,
-          nft,
-          memo,
-          fees,
-          returnTransaction
-        );
-
-        if (responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'joinPool',
-            signedTransaction: signedTransaction
-          }, 'joinPool');
     
           resolve({
             status: 'SUCCESS',
