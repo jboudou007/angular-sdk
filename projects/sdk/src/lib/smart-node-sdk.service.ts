@@ -662,7 +662,7 @@ export class SmartNodeSdkService {
     });
   }
 
-  public async exitPoolTransaction(
+  public async exitPool(
     senderId: string,
     poolWalletId: string,
     exitPool: {
@@ -677,50 +677,31 @@ export class SmartNodeSdkService {
         decimals: number
       }
     },
-    nft: {
-      tokenId: string,
-      serialNumber: number
-    },
-    memo?: string,
-    fees?: Array<any>,
-    returnTransaction?: boolean    
+    nftserialNumber: number
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
-        let responseData: any = await this.getHederaService().exitPoolTransaction(
-          senderId,
-          poolWalletId,
-          exitPool,
-          nft,
-          memo,
-          fees,
-          returnTransaction
-        );
+        this.getSocketsService().getMainSocket().fromOneTimeEvent('exitPool').then((response: {status: string, payload: any, error: string}) => {
+          if(response.status == 'success') {
+            resolve(response.payload);
+          } else {
+            reject(new Error(response.error));
+          }
+        }).catch(error => {
+          reject(error);
+        });
 
-        if (responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-    
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'exitPool',
-            signedTransaction: signedTransaction
-          }, 'exitPool');
-    
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error.message ?
-            responseData.response.error.message :
-            responseData.response.error
-          });
-        } 
+        this.getSocketsService().getMainSocket().emit('exitPool', {
+          type: 'swapPool',
+          senderId: senderId,
+          poolWalletId: poolWalletId,
+          exitPool: exitPool,
+          nftserialNumber: nftserialNumber
+        });
       } catch(error) {
         reject(error);
       }
-    })
+    });
   }
   // ---------------------------------------------
 }
