@@ -677,7 +677,7 @@ export class SmartNodeSdkService {
         decimals: number
       }
     },
-    nftserialNumber: number
+    serialNumber: number
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try {
@@ -696,7 +696,7 @@ export class SmartNodeSdkService {
           senderId: senderId,
           poolWalletId: poolWalletId,
           exitPool: exitPool,
-          nftserialNumber: nftserialNumber
+          serialNumber: serialNumber
         });
       } catch(error) {
         reject(error);
