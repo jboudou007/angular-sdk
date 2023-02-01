@@ -21,24 +21,44 @@ export class SmartNodeNetworkService {
   private network = {
     mainnet: [
       {
-        "operator": "0.0.1027975",
-        "publicKey": "302a300506032b657003210061b21f8a50b8e95a2597517bbd6e230e62328862c117c56a1b3e94e178186e69",
+        "operator": "0.0.1786597",
+        "publicKey": "302a300506032b65700321003f54816030c29221e4f228c76415cba0db1ab4c49827d9dbf580abc2f2b29c24",
         "url": "https://mainnet-sn1.hbarsuite.network"
-      },      
+      },
       {
-        "operator": "0.0.1027976",
-        "publicKey": "302a300506032b6570032100669c63617353f5181af0455e79c22688a0c7f69db169f7958c03bcab0dab8d97",
+        "operator": "0.0.1786598",
+        "publicKey": "302a300506032b6570032100233b043e21d5e148f48e2c2da6607a1f5e6fc381781bd0561967743a8291785e",
         "url": "https://mainnet-sn2.hbarsuite.network"
       },
       {
-        "operator": "0.0.1027978",
-        "publicKey": "302a300506032b65700321004a83f50907014c41b6e297a67fe4351c232822d6660e5470f0da912362d46164",
+        "operator": "0.0.1786599",
+        "publicKey": "302a300506032b6570032100c236c88b0aadccf86cc09c57734401409e301d45018ab179f8463801f486c89a",
         "url": "https://mainnet-sn3.hbarsuite.network"
       },
       {
-        "operator": "0.0.1027979",
-        "publicKey": "302a300506032b6570032100efc5eed0ba886f711c261ffd816aef05d70bc5c894037fc3ae0b354e26a243f6",
+        "operator": "0.0.1786600",
+        "publicKey": "302a300506032b65700321004e3c29113c911ce6dba13669fda53ed1ab3d89547e23c0b7ab2275fd5dc05766",
         "url": "https://mainnet-sn4.hbarsuite.network"
+      },
+      {
+        "operator": "0.0.1786344",
+        "publicKey": "302a300506032b65700321004e3c29113c911ce6dba13669fda53ed1ab3d89547e23c0b7ab2275fd5dc05766",
+        "url": "https://mainnet-sn5.hbarsuite.network"
+      },
+      {
+        "operator": "0.0.1786345",
+        "publicKey": "302a300506032b6570032100077bfba9f0fb180026f0de51d4e1083d616eff34a8fe62a1c0e34dd975b7f8cf",
+        "url": "https://mainnet-sn6.hbarsuite.network"
+      },
+      {
+        "operator": "0.0.1786347",
+        "publicKey": "302a300506032b6570032100ff792317f5a24278f1a2dddfc9a23670e158ccb9ecd42cdd0ab36e5ad8bc40a6",
+        "url": "https://mainnet-sn7.hbarsuite.network"
+      },
+      {
+        "operator": "0.0.1786365",
+        "publicKey": "302a300506032b6570032100485e23e18834571e466f96de9f96f228a1f5da860b319f0f0cb2890f938f298d",
+        "url": "https://mainnet-sn8.hbarsuite.network"
       }
     ],
     testnet: [
