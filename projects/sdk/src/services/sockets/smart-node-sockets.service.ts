@@ -184,20 +184,20 @@ export class SmartNodeSocketsService {
         network.forEach(node => {
           let nodeSocket = new SmartNodeSocket(node, wallet);
 
-          this.nodesOnline.set(nodeSocket.getNode().operator, {
+          this.nodesOnline.set(nodeSocket.getNode().url, {
             node: nodeSocket.getNode(),
             online: false
           });
 
           nodeSocket.on("connect", async() => {
-            this.nodesOnline.set(nodeSocket.getNode().operator, {
+            this.nodesOnline.set(nodeSocket.getNode().url, {
               node: nodeSocket.getNode(),
               online: true
             });
           });
 
           nodeSocket.on("disconnect", async(event) => {
-            this.nodesOnline.set(nodeSocket.getNode().operator, {
+            this.nodesOnline.set(nodeSocket.getNode().url, {
               node: nodeSocket.getNode(),
               online: false
             });
