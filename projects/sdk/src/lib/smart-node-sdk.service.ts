@@ -471,6 +471,26 @@ export class SmartNodeSdkService {
     });
   }
 
+  public createDaoRetry(
+    actionId: string
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().sendMessageToSmartNodes({
+          type: 'createDaoRetry',
+          actionId: actionId
+        }, 'createDaoRetry');
+
+        resolve({
+          status: 'SUCCESS',
+          payload: null
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public voteTransaction(
     daoTokenId: string,
     proposalDocument: any,
