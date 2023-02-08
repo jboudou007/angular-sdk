@@ -574,6 +574,26 @@ export class SmartNodeSdkService {
       }
     });
   }
+
+  public createProposalRetry(
+    actionId: string
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().sendMessageToSmartNodes({
+          type: 'createProposalRetry',
+          actionId: actionId
+        }, 'createProposalRetry');
+
+        resolve({
+          status: 'SUCCESS',
+          payload: null
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
   // ---------------------------------------------
 
   /**
