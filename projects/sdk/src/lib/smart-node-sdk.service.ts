@@ -534,6 +534,26 @@ export class SmartNodeSdkService {
     });
   }
 
+  public voteProposalRetry(
+    actionId: string
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().sendMessageToSmartNodes({
+          type: 'voteProposalRetry',
+          actionId: actionId
+        }, 'voteProposalRetry');
+
+        resolve({
+          status: 'SUCCESS',
+          payload: null
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public proposalTransaction(
     daoTokenId: string,
     proposalDocument: any,
