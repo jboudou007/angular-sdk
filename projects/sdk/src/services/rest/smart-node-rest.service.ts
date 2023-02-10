@@ -327,7 +327,8 @@ export class SmartNodeRestService {
     delta: number,
     bondingCurve: 'linear' | 'exponential',
     collectionId: string,
-    poolWalletId: string
+    poolWalletId: string,
+    type: 'hbar' | 'hsuite'
   ): Promise<any> {
     return new Promise(async(resolve, reject) => {
       try { 
@@ -339,7 +340,8 @@ export class SmartNodeRestService {
             delta: delta,
             bondingCurve: bondingCurve,
             collectionId: collectionId,
-            poolWalletId: poolWalletId
+            poolWalletId: poolWalletId,
+            type: type
           } }          
         );
 
