@@ -278,6 +278,26 @@ export class SmartNodeSdkService {
    * NFT DEX
    * ----------------------------------------------
    */
+  public createPoolTransactionRetry(
+    actionId: string
+  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
+    return new Promise(async(resolve, reject) => {
+      try {
+        this.getSocketsService().sendMessageToSmartNodes({
+          type: 'createPoolTransactionRetry',
+          actionId: actionId
+        }, 'createPoolTransactionRetry');
+
+        resolve({
+          status: 'SUCCESS',
+          payload: null
+        });
+      } catch(error) {
+        reject(error);
+      }
+    });
+  }
+
   public createNftPool(
     senderId: string,
     collectionId: string,

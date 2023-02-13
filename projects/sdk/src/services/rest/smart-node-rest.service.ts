@@ -321,6 +321,26 @@ export class SmartNodeRestService {
     });
   }
 
+  public async getPendingPoolsForWallet(
+    walletId: string
+  ): Promise<any> {
+    return new Promise(async(resolve, reject) => {
+      try { 
+        let response = await this.smartNodeNetworkService.getApiEndpoint(
+          `nft-pools/pools/pending/${walletId}`       
+        );
+
+        resolve({
+          function: 'getPendingPoolsForWallet',
+          node: this.smartNodeNetworkService.getCurrentNode(),
+          data: response
+        });
+      } catch(error) {
+        reject(error);        
+      }
+    });
+  }
+
   public async calculateNftPoolInjectionAmount(
     nftList: Array<number>,
     spotPrice: number,
