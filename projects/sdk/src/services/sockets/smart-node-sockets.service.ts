@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { SmartNodeSocket } from './smart-socket/smart-socket.class';
+import { SmartNodeSocket } from '../../lib/utils/smart-socket/smart-socket.class';
 import { Node } from '../network/interfaces/node.interface';
 import * as lodash from 'lodash';
 import { SmartNodeNetworkService } from '../network/smart-node-network.service';
-import Decimal from 'decimal.js';
 
 @Injectable({
   providedIn: 'root'
@@ -68,39 +67,6 @@ export class SmartNodeSocketsService {
     });
 
     return this.mainSocket;
-  }
-
-  async createNftPool(
-    signedTransaction: any, 
-    collectionId: string,
-    pricing: { fee: number, spotPrice: number, bondingCurve: 'linear' | 'exponential', delta: number},
-    nftList: Array<string>,
-    type: 'hbar' | 'hsuite'
-  ): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.mainSocket.fromOneTimeEvent('createNftPool').then((response: {status: string, payload: any, error: string}) => {
-          if(response.status == 'success') {
-            resolve(response.payload);
-          } else {
-            reject(new Error(response.error));
-          }
-        }).catch(error => {
-          reject(error);
-        });
-
-        this.mainSocket.emit('createNftPool', {
-          type: 'createNftPool',
-          signedTransaction: signedTransaction,
-          collectionId: collectionId,
-          pricing: pricing,
-          nftList: nftList,
-          fungible_common: type
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
   }
   
   async initAuth(wallet: string | null, currentNode: Node): Promise<boolean> {

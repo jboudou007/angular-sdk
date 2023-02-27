@@ -94,24 +94,7 @@ export class SmartNodeRestService {
         reject(error);        
       }
     });
-  }
-
-  public async calculateLaunchpadDiscount(launchpadId: string, accountId: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`launchpad/${launchpadId}/discount/${accountId}`);
-        let node = this.smartNodeNetworkService.getCurrentNode();
-
-        resolve({
-          function: 'calculateLaunchpadDiscount',
-          node: node,
-          data: response
-        });
-      } catch(error) {
-        reject(error);        
-      }
-    });
-  }
+  } 
 
   public async getGameToken(): Promise<any> {
     return new Promise(async(resolve, reject) => {
@@ -142,28 +125,6 @@ export class SmartNodeRestService {
 
         resolve({
           function: 'gameFlipCoin',
-          node: node,
-          data: response
-        });
-      } catch(error) {
-        reject(error);        
-      }
-    });
-  }
-
-  public async loadLaunchpads(): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`launchpad/list`);
-        let node = this.smartNodeNetworkService.getCurrentNode();
-
-        response.forEach((data: any) => {
-          data.image = `${node.url}/${data.image}`;
-          data.launchpad.header = data.launchpad.header ? `${node.url}/${data.launchpad.header}` : null;
-        });
-
-        resolve({
-          function: 'loadLaunchpads',
           node: node,
           data: response
         });
@@ -486,45 +447,6 @@ export class SmartNodeRestService {
     });
   }
 
-  public async loadDAOs(): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(`dao/list`);
-        let node = this.smartNodeNetworkService.getCurrentNode();
-
-        resolve({
-          function: 'loadDAOs',
-          node: node,
-          data: response
-        });
-      } catch(error) {
-        reject(error);        
-      }
-    });
-  }
-
-  public async loadProposals(tokenId: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(
-          `dao/proposals`,
-          { params: {
-            tokenId: tokenId
-          } }          
-        );
-        let node = this.smartNodeNetworkService.getCurrentNode();
-
-        resolve({
-          function: 'loadProposals',
-          node: node,
-          data: response
-        });
-      } catch(error) {
-        reject(error);        
-      }
-    });
-  }
-
   public async loadFees(
     fee: 'tokens' | 'launchpads' | 'daos' | 'multisig' | 'nft_exchange' | 'exchange'
   ): Promise<any> {
@@ -541,79 +463,6 @@ export class SmartNodeRestService {
 
         resolve({
           function: 'loadFees',
-          node: node,
-          data: response
-        });
-      } catch(error) {
-        reject(error);        
-      }
-    });
-  }
-
-  public async loadProposal(tokenId: string, consensus_timestamp: string, type: 'public' | 'private'): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(
-          `dao/proposal`,
-          { params: {
-            tokenId: tokenId,
-            consensus_timestamp: consensus_timestamp,
-            type: type
-          } }
-        );
-        let node = this.smartNodeNetworkService.getCurrentNode();
-
-        resolve({
-          function: 'loadProposal',
-          node: node,
-          data: response
-        });
-      } catch(error) {
-        reject(error);        
-      }
-    });
-  }
-
-  public async loadSnapshotValidate(walletId: string, tokenId: string, consensus_timestamp: string, type: 'public' | 'private'): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(
-          `dao/snapshot/validate`,
-          { params: {
-            walletId: walletId,
-            tokenId: tokenId,
-            consensus_timestamp: consensus_timestamp,
-            type: type
-          } }
-        );
-        let node = this.smartNodeNetworkService.getCurrentNode();
-
-        resolve({
-          function: 'loadSnapshotValidate',
-          node: node,
-          data: response
-        });
-      } catch(error) {
-        reject(error);        
-      }
-    });
-  }
-
-  public async loadSnapshot(tokenId: string, consensus_timestamp: string, type: 'public' | 'private'): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let response = await this.smartNodeNetworkService.getApiEndpoint(
-          `dao/snapshot`,
-          { params: {
-            tokenId: tokenId,
-            consensus_timestamp: consensus_timestamp,
-            type: type
-          } }
-        );
-        let node = this.smartNodeNetworkService.getCurrentNode();
-
-        resolve({
-          function: 'loadSnapshot',
           node: node,
           data: response
         });

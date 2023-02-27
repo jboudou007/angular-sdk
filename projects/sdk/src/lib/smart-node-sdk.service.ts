@@ -7,7 +7,6 @@ import { SmartNodeRestService } from '../services/rest/smart-node-rest.service';
 import { SmartNodeSocketsService } from '../services/sockets/smart-node-sockets.service';
 import * as lodash from 'lodash';
 import Decimal from 'decimal.js';
-import { TransactionReceipt } from '@hashgraph/sdk';
 
 @Injectable({
   providedIn: 'root'
@@ -185,92 +184,6 @@ export class SmartNodeSdkService {
   public getHederaService(): SmartNodeHederaService {
     return this.smartNodeHederaService;
   }
-
-  /**
-   * ----------------------------------------------
-   * LAUNCHPAD
-   * ----------------------------------------------
-   */
-  async launchpadConfirm(transactionId: string, success: boolean, message: string) {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.getSocketsService().getMainSocket().fromOneTimeEvent('launchpadConfirm')
-          .then((response: {status: string, payload: any, error: string}) => {
-          if(response.status == 'success') {
-            resolve(response.payload);
-          } else {
-            reject(new Error(response.error));
-          }
-        }).catch(error => {
-          reject(error);
-        });
-
-        this.getSocketsService().getMainSocket().emit('launchpadConfirm', {
-          type: 'launchpadConfirm',
-          transactionId: transactionId,
-          success: success,
-          message: message
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  async launchpadBuy(buyer: string, hbarAmount: Decimal, tokenId: string, referral: string)
-  : Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.getSocketsService().getMainSocket().fromOneTimeEvent('launchpadBuy')
-          .then((response: {status: string, payload: any, error: string}) => {
-          if(response.status == 'success') {
-            resolve(response.payload);
-          } else {
-            reject(new Error(response.error));
-          }
-        }).catch(error => {
-          reject(error);
-        });
-
-        this.getSocketsService().getMainSocket().emit('launchpadBuy', {
-          type: 'launchpadBuy',
-          buyer: buyer,
-          hbarAmount: hbarAmount,
-          tokenId: tokenId,
-          referral: referral
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public launchpadNftBuy(buyer: string, priceAmount: Decimal, tokenId: string)
-  : Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.getSocketsService().getMainSocket().fromOneTimeEvent('launchpadNftBuy')
-          .then((response: {status: string, payload: any, error: string}) => {
-          if(response.status == 'success') {
-            resolve(response.payload);
-          } else {
-            reject(new Error(response.error));
-          }
-        }).catch(error => {
-          reject(error);
-        });
-
-        this.getSocketsService().getMainSocket().emit('launchpadNftBuy', {
-          type: 'launchpadNftBuy',
-          buyer: buyer,
-          priceAmount: priceAmount,
-          tokenId: tokenId
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
   // ---------------------------------------------
 
   /**
@@ -316,17 +229,26 @@ export class SmartNodeSdkService {
 
         if(responseData.response.success) {
           let signedTransaction = responseData.response.signedTransaction;
-          let payload = await this.smartNodeSocketsService.createNftPool(
-            signedTransaction, 
-            collectionId,
-            pricing,
-            nftList,
-            type
-          );
-
-          resolve({
-            status: 'SUCCESS',
-            payload: payload
+          this.getSocketsService().getMainSocket().fromOneTimeEvent('createNftPool').then((response: {status: string, payload: any, error: string}) => {
+            if(response.status == 'success') {
+              resolve({
+                status: 'SUCCESS',
+                payload: response.payload
+              });
+            } else {
+              reject(new Error(response.error));
+            }
+          }).catch(error => {
+            reject(error);
+          });
+  
+          this.getSocketsService().getMainSocket().emit('createNftPool', {
+            type: 'createNftPool',
+            signedTransaction: signedTransaction,
+            collectionId: collectionId,
+            pricing: pricing,
+            nftList: nftList,
+            fungible_common: type
           });
         } else {
           resolve({
@@ -429,205 +351,6 @@ export class SmartNodeSdkService {
           nft: nft,
           swapType: swapType,
           buyWith: buyWith
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-  // ---------------------------------------------
-
-  /**
-   * ----------------------------------------------
-   * DAO
-   * ----------------------------------------------
-   */  
-  public createDaoTransaction(
-    daoTokenId: string,
-    senderId: string,
-    daoDocument: {
-      about: string
-      tokenId: string
-      image: string
-      limited: {
-        councilNftId: string
-      }
-    },    
-    fees: any,
-    returnTransaction?: boolean
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let responseData: any = await this.getHederaService().createDaoTransaction(
-          daoTokenId,
-          senderId,
-          daoDocument,
-          fees,
-          returnTransaction
-        );
-
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'createDao',
-            signedTransaction: signedTransaction,
-            daoDocument: daoDocument
-          }, 'createDao');
-
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        } 
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public createDaoRetry(
-    actionId: string
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.getSocketsService().sendMessageToSmartNodes({
-          type: 'createDaoRetry',
-          actionId: actionId
-        }, 'createDaoRetry');
-
-        resolve({
-          status: 'SUCCESS',
-          payload: null
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public voteTransaction(
-    daoTokenId: string,
-    proposalDocument: any,
-    votedOption: number,
-    senderId: string,
-    fees: any,
-    returnTransaction?: boolean   
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let responseData: any = await this.getHederaService().voteTransaction(
-          daoTokenId,
-          proposalDocument,
-          votedOption,
-          senderId,
-          fees,
-          returnTransaction
-        );
-
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'voteProposal',
-            signedTransaction: signedTransaction
-          }, 'voteProposal');
-
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        } 
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public voteProposalRetry(
-    actionId: string
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.getSocketsService().sendMessageToSmartNodes({
-          type: 'voteProposalRetry',
-          actionId: actionId
-        }, 'voteProposalRetry');
-
-        resolve({
-          status: 'SUCCESS',
-          payload: null
-        });
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public proposalTransaction(
-    daoTokenId: string,
-    proposalDocument: any,
-    senderId: string,
-    fees: any,
-    returnTransaction?: boolean   
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let responseData: any = await this.getHederaService().proposalTransaction(
-          daoTokenId,
-          senderId,
-          fees,
-          returnTransaction
-        );
-
-        if(responseData.response.success) {
-          let signedTransaction = responseData.response.signedTransaction;
-
-          this.getSocketsService().sendMessageToSmartNodes({
-            type: 'createProposal',
-            signedTransaction: signedTransaction,
-            proposalDocument: proposalDocument
-          }, 'createProposal');
-
-          resolve({
-            status: 'SUCCESS',
-            payload: responseData
-          });
-        } else {
-          resolve({
-            status: 'ERROR',
-            payload: responseData.response.error
-          });
-        } 
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public createProposalRetry(
-    actionId: string
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        this.getSocketsService().sendMessageToSmartNodes({
-          type: 'createProposalRetry',
-          actionId: actionId
-        }, 'createProposalRetry');
-
-        resolve({
-          status: 'SUCCESS',
-          payload: null
         });
       } catch(error) {
         reject(error);

@@ -7,11 +7,13 @@ export class SmartNodeSocket extends Socket {
 
   constructor(
     @Inject(Object) node: any, 
-    @Inject(Object) wallet: any
+    @Inject(Object) wallet: any,
+    @Inject(Object) namespace: string = 'smart-node'
   ) {
+    node.url = `${node.url.replace('https://', 'wss://').replace('http://', 'ws://')}/${namespace}`;
 
     super({
-      url: `${node.url.replace('https://', 'wss://')}/smart-node`,
+      url: node.url,
       options: {
         transports: ["websocket"],
         query: {
