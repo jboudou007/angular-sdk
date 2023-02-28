@@ -4,20 +4,46 @@ import { Observable, Subject } from 'rxjs';
 import { Storage } from '@capacitor/storage';
 import axios from 'axios';
 
+/**
+ * SmartNodeNetworkService
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SmartNodeNetworkService {
+
+  /**
+   * private nodeObserver
+   * @type {Subject<any>}
+   */
   private nodeObserver = new Subject<any>();
+
+  /**
+   * private nodeObservable
+   * @type {Observable<any>}
+   */
   private nodeObservable = this.nodeObserver.asObservable();
 
-  private nodes: Array<Node> = new  Array<Node>();
+  /**
+   * private nodes
+   * @type {Array<Node>}
+   */
+  private nodes: Array<Node> = new Array<Node>();
+
+  /**
+   * private node
+   * @type {Node}
+   */
   private node: Node = {
     operator: '',
     publicKey: '',
     url: ''
   };
 
+  /**
+   * private network
+   * @type {any}
+   */
   private network = {
     mainnet: [
       {
@@ -103,44 +129,62 @@ export class SmartNodeNetworkService {
         "operator": "0.0.3320",
         "publicKey": "302a300506032b6570032100ecb67bdae47babf0d2df87f6b787562357550fac02a5e1ea44b22cc0c1ab2738",
         "url": "http://localhost:3004"
-      }   
+      }
     ]
   };
 
-  constructor() {}
+  /**
+   * constructor
+   */
+  constructor() { }
 
+  /**
+   * public method to get the node observer
+   * @returns Observable<any>
+   */
   getNodeObserver(): Observable<any> {
     return this.nodeObservable;
   }
 
+  /**
+   * public method to set the network
+   * @param network
+   * @param node
+   * @param override
+   * @returns Promise<boolean>
+    */
   public async setNetwork(network: 'mainnet' | 'testnet' | 'local', node: string, override: boolean = false): Promise<boolean> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         // as very first, we setup the core network...
         this.nodes = this.network[network];
         // setting a random node to use as default one...
-        if(node == 'random') {
+        if (node == 'random') {
           await this.shuffleNode(override);
         } else {
           this.node = this.getSpecificNode(Number(node));
         }
-        
+
         // then we fetch the entire network of nodes, and we update our nodes array...
         try {
           let whitelistedNetwork = await this.getNetwork();
-          this.nodes = whitelistedNetwork.data;          
+          this.nodes = whitelistedNetwork.data;
           resolve(true);
-        } catch(error) {
+        } catch (error) {
           resolve(await this.setNetwork(network, node, true));
         }
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     })
   }
 
+  /**
+   * public method to get the network
+   * @returns Promise<any>
+   */
   async getNetwork(): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         // then we call the endpoint to grab the entire list of nodes...
         let response = await this.getApiEndpoint('smart-node/network');
@@ -150,25 +194,39 @@ export class SmartNodeNetworkService {
           node: this.node,
           data: response
         });
-      } catch(error) {
-        reject(error);        
+      } catch (error) {
+        reject(error);
       }
     });
   }
 
+  /**
+   * public method to get the current node
+   * @returns Node
+   */
   public getCurrentNode(): Node {
     return this.node;
   }
 
+  /**
+   * public method to set the current node
+   * @param node
+   * @returns void
+   */
   public setCurrentNode(node: Node): void {
     this.node = node;
   }
 
+  /**
+   * public method to get a random node
+   * @param override
+   * @returns Promise<Node>
+   */
   public async getRandomNode(override: boolean): Promise<Node> {
-    let auth = await Storage.get({key: 'hashconnect.auth'});
+    let auth = await Storage.get({ key: 'hashconnect.auth' });
     let node = null;
 
-    if(auth.value && !override) {
+    if (auth.value && !override) {
       let authStorage = JSON.parse(auth.value);
       node = this.nodes.find(node => node.operator == authStorage.signedPayload.originalPayload.node);
     } else {
@@ -178,16 +236,31 @@ export class SmartNodeNetworkService {
     return node;
   }
 
+  /**
+   * public method to get a specific node
+   * @param index
+   * @returns Node
+   */
   public getSpecificNode(index: number): Node {
     return this.nodes[index];
   }
 
+  /**
+   * public method to shuffle the node
+   * @param override
+   * @returns Promise<void>
+   */
   public async shuffleNode(override: boolean): Promise<void> {
     this.node = await this.getRandomNode(override);
   }
 
+  /**
+   * public method to set node from active nodes
+   * @param activeNodes
+   * @returns void
+   */
   public setNodeFromActiveNodes(activeNodes: Array<Node>): void {
-    if(activeNodes.length) {
+    if (activeNodes.length) {
       this.node = activeNodes[Math.floor(Math.random() * activeNodes.length)];
       this.nodeObserver.next(this.node);
     } else {
@@ -195,42 +268,64 @@ export class SmartNodeNetworkService {
     }
   }
 
+  /**
+   * Post API endpoint
+   * @param endpoint
+   * @param params
+   * @param config
+   * @returns Promise<any>
+   */
   async postApiEndpoint(endpoint: string, params: any = {}, config: any = {}): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let response = await this.callApiEndpoint('post', endpoint, params, config);
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
   }
 
+  /**
+   * Get API endpoint
+   * @param endpoint
+   * @param params
+   * @returns Promise<any>
+   */
   async getApiEndpoint(endpoint: string, params: any = {}): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let response = await this.callApiEndpoint('get', endpoint, params);
         resolve(response);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
   }
 
+  /**
+   * private method to call the api endpoint
+   * @param type
+   * @param endpoint
+   * @param params
+   * @param config
+   * @param trials
+   * @returns Promise<any>
+   */
   private async callApiEndpoint(
     type: 'get' | 'post',
-    endpoint: string, 
-    params: any = {}, 
-    config: any = {}, 
+    endpoint: string,
+    params: any = {},
+    config: any = {},
     trials: number = 0
   ): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         // try to call the required api endpoint...
         let response = null;
 
-        if(this.node.url != '') {
-          switch(type) {
+        if (this.node.url != '') {
+          switch (type) {
             case 'get':
               response = await axios.get(`${this.node.url}/${endpoint}`, params);
               break;
@@ -238,13 +333,13 @@ export class SmartNodeNetworkService {
               response = await axios.post(`${this.node.url}/${endpoint}`, params, config);
               break;
           }
-  
+
           this.nodeObserver.next(this.node);
-          resolve(response.data);          
+          resolve(response.data);
         } else {
           resolve(response);
         }
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });

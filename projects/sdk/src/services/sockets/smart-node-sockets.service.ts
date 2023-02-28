@@ -5,70 +5,141 @@ import { Node } from '../network/interfaces/node.interface';
 import * as lodash from 'lodash';
 import { SmartNodeNetworkService } from '../network/smart-node-network.service';
 
+/**
+ * SmartNodeSocketsService
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SmartNodeSocketsService {
+
+  /**
+   * private nodes sockets
+   * @type {Array<SmartNodeSocket>}
+   */
   private nodesSockets: Array<SmartNodeSocket> = new Array<SmartNodeSocket>();
+
+  /**
+   * private nodesOnline
+   * @type {Map<string, any>}
+   */
   private nodesOnline: Map<string, any> = new Map<string, any>();
-  
+
+  /**
+   * private socketObserver
+   * @type {Subject<any>}
+   */
   private socketObserver = new Subject<any>();
+
+  /**
+   * private socketObservable
+   * @type {Observable<any>}
+   */
   private socketObservable = this.socketObserver.asObservable();
 
+  /**
+   * private mainSocket
+   * @type {SmartNodeSocket}
+   */
   private mainSocket: SmartNodeSocket;
 
+  /**
+   * Constructor
+   * @param {SmartNodeNetworkService} smartNodeNetworkService
+   */
   constructor(
     private smartNodeNetworkService: SmartNodeNetworkService
-  ) {}
+  ) { }
 
+  /**
+   * init the node
+   * @param {Node} currentNode
+   * @param {any} authSession
+   * @param {Array<Node>} network
+   * @returns {Promise<void>}
+   */
   async init(currentNode: Node, authSession: any, network: Array<Node>): Promise<void> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let wallet = lodash.get(authSession.accountIds, 0);
-        
+
         await this.initNodes(wallet, network);
         await this.initAuth(wallet, currentNode);
-       
+
         resolve();
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
-    });   
+    });
   }
 
+  /**
+   * get the main socket
+   * @returns {SmartNodeSocket}
+   */
   getMainSocket(): SmartNodeSocket {
     return this.mainSocket;
   }
 
+  /**
+   * get the socket observer
+   * @returns {Observable<any>}
+   */
   getSocketObserver(): Observable<any> {
     return this.socketObservable;
   }
 
+  /**
+   * get the nodes online
+   * @returns {Map<string, any>}
+   */
   getNodesOnline(): Map<string, any> {
     return this.nodesOnline;
   }
 
+  /**
+   * send message to smart nodes
+   * @param {any} payload
+   * @param {string} topic
+   * @returns {Promise<void>}
+   */
   async sendMessageToSmartNodes(payload: any, topic: string) {
     this.mainSocket.emit(topic, payload);
   }
 
+  /**
+   * authenticate the wallet
+   * @param {string} wallet
+   * @returns {Promise<void>}
+   */
   authorizeWallet(): void {
     this.mainSocket.disconnect();
     this.mainSocket.connect();
   }
 
+  /**
+   * initialize main socket
+   * @param {Node} currentNode
+   * @returns {SmartNodeSocket}
+   */
   initMainSocket(currentNode: Node): SmartNodeSocket {
     this.nodesSockets.forEach(nodeSocket => {
       let node = nodeSocket.getNode();
 
-      if(node.operator == currentNode.operator) {
+      if (node.operator == currentNode.operator) {
         this.mainSocket = nodeSocket;
       }
     });
 
     return this.mainSocket;
   }
-  
+
+  /**
+   * initialize authentication
+   * @param {string} wallet
+   * @param {Node} currentNode
+   * @returns {Promise<boolean>}
+   */
   async initAuth(wallet: string | null, currentNode: Node): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       this.mainSocket = this.initMainSocket(currentNode);
@@ -83,7 +154,7 @@ export class SmartNodeSocketsService {
         });
       });
 
-      this.mainSocket.fromEvent('errors').subscribe(async(message: any) => {
+      this.mainSocket.fromEvent('errors').subscribe(async (message: any) => {
         this.socketObserver.next({
           event: 'errors',
           content: {
@@ -135,6 +206,12 @@ export class SmartNodeSocketsService {
     });
   }
 
+  /**
+   * initialize nodes
+   * @param {string} wallet
+   * @param {Array<Node>} network
+   * @returns {Promise<Array<SmartNodeSocket>>}
+   */
   async initNodes(wallet: string | null, network: Array<Node>): Promise<Array<SmartNodeSocket>> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -146,7 +223,7 @@ export class SmartNodeSocketsService {
 
         this.nodesSockets = new Array<SmartNodeSocket>();
         this.nodesOnline = new Map<string, any>();
-        
+
         network.forEach(node => {
           let nodeSocket = new SmartNodeSocket(node, wallet);
 
@@ -155,21 +232,21 @@ export class SmartNodeSocketsService {
             online: false
           });
 
-          nodeSocket.on("connect", async() => {
+          nodeSocket.on("connect", async () => {
             this.nodesOnline.set(nodeSocket.getNode().url, {
               node: nodeSocket.getNode(),
               online: true
             });
           });
 
-          nodeSocket.on("disconnect", async(event) => {
+          nodeSocket.on("disconnect", async (event) => {
             this.nodesOnline.set(nodeSocket.getNode().url, {
               node: nodeSocket.getNode(),
               online: false
             });
 
-            if(nodeSocket.getNode().operator == this.mainSocket.getNode().operator
-            && event == 'transport close') {
+            if (nodeSocket.getNode().operator == this.mainSocket.getNode().operator
+              && event == 'transport close') {
               this.setNodeFromActiveNodes();
             }
           });
@@ -185,6 +262,10 @@ export class SmartNodeSocketsService {
     });
   }
 
+  /**
+   * private method to set node from active nodes
+   * @returns {void}
+   */
   private setNodeFromActiveNodes(): void {
     try {
       // creating a Map of active node of the network...
@@ -193,7 +274,7 @@ export class SmartNodeSocketsService {
           if (node.online) {
             return node.node.operator;
           }
-      
+
           return false;
         })
       );
@@ -203,7 +284,7 @@ export class SmartNodeSocketsService {
 
       // updating the current used node, picking up a random one from the online list...
       this.smartNodeNetworkService.setNodeFromActiveNodes(network);
-    } catch(error) {
+    } catch (error) {
       throw new Error(error.message);
     }
   }

@@ -8,6 +8,9 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 
+/**
+ * test
+ */
 declare const require: {
   context(path: string, deep?: boolean, filter?: RegExp): {
     <T>(id: string): T;
@@ -22,6 +25,9 @@ getTestBed().initTestEnvironment(
 );
 
 // Then we find all the tests.
+/**
+ * context
+ */
 const context = require.context('./', true, /\.spec\.ts$/);
 // And load the modules.
 context.keys().forEach(context);

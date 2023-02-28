@@ -5,23 +5,53 @@ import { Subject } from 'rxjs';
 import * as lodash from 'lodash';
 import { SmartNodeSocketsService } from '../sockets/smart-node-sockets.service';
 
+/**
+ *  SmartNodeHashPackService
+ * @description This service is responsible for handling the HashPack connection
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SmartNodeHashPackService {
+  /**
+   * Private property hashconnect
+   */
   private hashconnect: HashConnect;
+
+  /**
+   * Private property appMetadata
+   */
   private appMetadata: HashConnectTypes.AppMetadata;
 
+  /**
+   * Private property dataObserver
+   */
   private dataObserver = new Subject<any>();
+
+  /**
+   * Public property observeHashpackConnection
+   * @returns {Observable<any>}
+   */
   public observeHashpackConnection = this.dataObserver.asObservable();
 
+  /**
+   * Private property network
+   */
   private network: string;
+
+  /**
+   * Private property hashconnectData
+   */
   private hashconnectData = {
     topic: '',
     pairingString: '',
     accountIds: new Array<string>()
   }
 
+  /**
+   * Constructor Method
+   * @param {smartNodeSocketsService} smartNodeSocketsService
+   */
   constructor(
     private smartNodeSocketsService: SmartNodeSocketsService
   ) {
@@ -40,15 +70,19 @@ export class SmartNodeHashPackService {
       await Storage.set({
         key: 'hashconnect.data',
         value: JSON.stringify(this.hashconnectData),
-      });      
+      });
 
       this.dataObserver.next(this.hashconnectData);
     });
   }
 
+  /**
+   * Public method getSigner
+   * @returns {any}
+   */
   public getSigner(): any {
     const provider = this.hashconnect.getProvider(
-      this.network, 
+      this.network,
       this.hashconnectData.topic,
       lodash.first(this.hashconnectData.accountIds)
     );
@@ -57,6 +91,12 @@ export class SmartNodeHashPackService {
     return signer;
   }
 
+  /**
+   * Public method to connect to HashPack
+   * @param {string} network
+   * @param {string} type
+   * @returns {Promise<string>}
+   */
   public async connect(network: 'mainnet' | 'testnet' | 'previewnet', type?: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -69,7 +109,7 @@ export class SmartNodeHashPackService {
           accountIds: initData.savedPairings[0]?.accountIds
         }
 
-        if(type == 'hashpack') {
+        if (type == 'hashpack') {
           this.hashconnect.connectToLocalWallet();
         }
 
@@ -80,12 +120,16 @@ export class SmartNodeHashPackService {
     });
   }
 
+  /**
+   *  Public method disconnect
+   * @returns {Promise<boolean>}
+   */
   public async disconnect(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
         try {
-          await this.hashconnect.disconnect(this.hashconnectData.topic);          
-        } catch(error) {
+          await this.hashconnect.disconnect(this.hashconnectData.topic);
+        } catch (error) {
           console.error(error);
         }
 
@@ -108,6 +152,10 @@ export class SmartNodeHashPackService {
     });
   }
 
+  /**
+   * Public method loadHashconnectData
+   * @returns {Promise<any>}
+   */
   public async loadHashconnectData(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -131,6 +179,14 @@ export class SmartNodeHashPackService {
     });
   }
 
+  /**
+   * Public method to send a transaction
+   * @param {any} transaction
+   * @param {string} accountId
+   * @param {boolean} returnTransaction
+   * @param {boolean} hideNft
+   * @returns {Promise<any>}
+   */
   public async sendTransaction(transaction: any, accountId: string, returnTransaction: boolean = true, hideNft: boolean = false) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -157,19 +213,27 @@ export class SmartNodeHashPackService {
     });
   }
 
+  /**
+   * Public method to clear an authentication session
+   * @returns {Promise<any>}
+   */
   public async clearAuthSession(): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         await Storage.remove({ key: 'hashconnect.auth' });
         resolve(true);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
   }
 
+  /**
+   * Public method to get an authentication session
+   * @returns {Promise<any>}
+   */
   public async getAuthSession(): Promise<any> {
-    return new Promise(async(resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
         let auth = await Storage.get({
           key: 'hashconnect.auth'
@@ -182,12 +246,19 @@ export class SmartNodeHashPackService {
         }
 
         resolve(authResponse);
-      } catch(error) {
+      } catch (error) {
         reject(error);
       }
     });
   }
 
+  /**
+   * Public method to authenticate a wallet
+   * @param {string} walletId
+   * @param {any} signature
+   * @param {any} payload
+   * @returns {Promise<any>}
+   */
   public async authenticateWallet(walletId: string, signature: any, payload: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
@@ -198,7 +269,7 @@ export class SmartNodeHashPackService {
           signature.signature,
           payload);
 
-        if(authResponse.success) {
+        if (authResponse.success) {
           await Storage.set({
             key: 'hashconnect.auth',
             value: JSON.stringify(authResponse),

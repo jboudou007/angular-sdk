@@ -16,19 +16,19 @@ import * as lodash from 'lodash';
 export class SmartNodeSdkService {
   /**
    * Private property eventsObserver
-   */ 
+   */
   private eventsObserver = new Subject<any>();
 
   /**
    * Private property eventsObservable
-   */ 
+   */
   private eventsObservable = this.eventsObserver.asObservable();
 
   /**
    * Private property hashpackWallet
-   */   
+   */
   private hashpackWallet = null;
-  
+
   /**
    * Constructor Method
    * @param {smartNodeNetworkService} smartNodeNetworkService
@@ -49,31 +49,31 @@ export class SmartNodeSdkService {
     @Inject('node') private node: string
   ) {
     // initializing the HSuite Network from the code-nodes...
-    this.smartNodeNetworkService.setNetwork(this.network, this.node).then(async() => {
+    this.smartNodeNetworkService.setNetwork(this.network, this.node).then(async () => {
       console.log(`network has been initialized correctly, all new nodes have been fetched and ready to be used.`);
 
       try {
         let utilities = (await this.smartNodeRestService.getUtilities()).data;
         this.smartNodeHederaService.setUtilities(utilities);
-        
+
         let hashconnectData = await this.smartNodeHashPackService.loadHashconnectData();
         this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
 
         let message = await this._initSockets(hashconnectData);
         console.log(message);
-        
+
         // subscribing to the nodeObserver, to monitor if a node goes down, and the service switches to a new one...
         this.smartNodeNetworkService.getNodeObserver().subscribe(async (node) => {
           let mainSocket = this.smartNodeSocketsService.getMainSocket();
 
           // if we received a notification, we check if the new node is different than the one used with the mainSocket...
-          if(mainSocket && mainSocket.getNode().operator != node.operator) {
+          if (mainSocket && mainSocket.getNode().operator != node.operator) {
             // and we re-establish a secure connection by initializing an new auth session...
             await this.smartNodeSocketsService.initAuth(this.hashpackWallet, this.smartNodeNetworkService.getCurrentNode());
             await this.smartNodeSocketsService.authorizeWallet();
           }
-        });          
-      } catch(error) {
+        });
+      } catch (error) {
         console.error(error);
       }
 
@@ -83,14 +83,14 @@ export class SmartNodeSdkService {
           let message = await this._initSockets(hashconnectData);
           this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
           console.log(message);
-        } catch(error) {
+        } catch (error) {
           console.error(error);
         }
       });
 
       // subscribing to websockets authentication events...
-      this.smartNodeSocketsService.getSocketObserver().subscribe(async(event) => {
-        switch(event.event) {
+      this.smartNodeSocketsService.getSocketObserver().subscribe(async (event) => {
+        switch (event.event) {
           case 'auth':
             await this.handleAuthEvent(event.content);
             break;
@@ -98,8 +98,8 @@ export class SmartNodeSdkService {
             await this.handleGenericEvents(event.content);
             break;
           case 'errors':
-            await this.handleErrors(event.content);     
-            break;       
+            await this.handleErrors(event.content);
+            break;
         }
       });
     }).catch(error => {
@@ -111,7 +111,7 @@ export class SmartNodeSdkService {
    * Private method for error handling.
    * @param event
    * @returns Promise<any>
-   */  
+   */
   private async handleErrors(event: any): Promise<any> {
     this.eventsObserver.next(event);
   }
@@ -120,7 +120,7 @@ export class SmartNodeSdkService {
    * Private method for events handling.
    * @param event
    * @returns Promise<any>
-   */    
+   */
   private async handleGenericEvents(event: any): Promise<any> {
     this.eventsObserver.next(event);
   }
@@ -129,14 +129,14 @@ export class SmartNodeSdkService {
    * Private method for authentication handling.
    * @param event
    * @returns Promise<void>
-   */  
+   */
   private async handleAuthEvent(event: any): Promise<void> {
-    switch(event.method) {
+    switch (event.method) {
       case 'authentication':
         try {
           let authResponse = await this.smartNodeHashPackService.getAuthSession();
 
-          if(!authResponse) {
+          if (!authResponse) {
             this.eventsObserver.next(event);
 
             let signedData = {
@@ -148,7 +148,7 @@ export class SmartNodeSdkService {
               event.data.wallet,
               signedData,
               event.data.authResponse.payload
-            );             
+            );
           }
 
           if (authResponse.success) {
@@ -164,7 +164,7 @@ export class SmartNodeSdkService {
               mode: 'warning'
             });
           }
-        } catch(error: any) {
+        } catch (error: any) {
           this.eventsObserver.next({
             title: 'Authentication Error',
             message: error.message,
@@ -174,34 +174,34 @@ export class SmartNodeSdkService {
         }
         break;
       case 'authenticate':
-        if(event.type == 'warning') {
+        if (event.type == 'warning') {
           this.smartNodeHashPackService.clearAuthSession();
         }
 
-        this.eventsObserver.next(event); 
-      break;
-    }    
+        this.eventsObserver.next(event);
+        break;
+    }
   }
 
   /**
    * Private method to initialize the websockets.
    * @param hashconnectData
    * @returns Promise<string>
-   */  
+   */
   private _initSockets(hashconnectData: any): Promise<string> {
-   return new Promise(async(resolve, reject) => {
-    try {
-      await this.smartNodeSocketsService.init(
-        this.smartNodeNetworkService.getCurrentNode(),
-        hashconnectData,
-        (await this.smartNodeNetworkService.getNetwork()).data
-      );
-      
-      resolve("all sockets have been initialized correctly.");
-    } catch(error) {
-      reject(error);
-    }     
-   })
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.smartNodeSocketsService.init(
+          this.smartNodeNetworkService.getCurrentNode(),
+          hashconnectData,
+          (await this.smartNodeNetworkService.getNetwork()).data
+        );
+
+        resolve("all sockets have been initialized correctly.");
+      } catch (error) {
+        reject(error);
+      }
+    })
   }
 
   /**
@@ -227,7 +227,7 @@ export class SmartNodeSdkService {
   public getHashPackService(): SmartNodeHashPackService {
     return this.smartNodeHashPackService;
   }
-  
+
   /**
    * Retrieves the Rest Service, to interact with the SmartNode Rest API.
    * @returns SmartNodeRestService
@@ -239,7 +239,7 @@ export class SmartNodeSdkService {
   /**
    * Retrieves the Sockets Service, to interact with the SmartNode Sockets API.
    * @returns SmartNodeSocketsService
-   */  
+   */
   public getSocketsService(): SmartNodeSocketsService {
     return this.smartNodeSocketsService;
   }

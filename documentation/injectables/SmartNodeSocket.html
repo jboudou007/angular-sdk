@@ -62,6 +62,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>SmartNodeSocket</p>
+
+            </p>
 
             <p class="comment">
                 <h3>Extends</h3>
@@ -125,12 +132,14 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="6" class="link-to-prism">projects/sdk/src/lib/utils/smart-socket/smart-socket.class.ts:6</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">projects/sdk/src/lib/utils/smart-socket/smart-socket.class.ts:14</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Constructor Method</p>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -212,18 +221,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="30"
-                            class="link-to-prism">projects/sdk/src/lib/utils/smart-socket/smart-socket.class.ts:30</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="49"
+                            class="link-to-prism">projects/sdk/src/lib/utils/smart-socket/smart-socket.class.ts:49</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>getNode Method</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
 
+                    </div>
+                    <div class="io-description">
+                        
                     </div>
                 </td>
             </tr>
@@ -255,10 +271,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="6" class="link-to-prism">projects/sdk/src/lib/utils/smart-socket/smart-socket.class.ts:6</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">projects/sdk/src/lib/utils/smart-socket/smart-socket.class.ts:14</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Private property node</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -271,12 +293,27 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Inject, Injectable } from &quot;@angular/core&quot;;
 import { Socket } from &#x27;ngx-socket-io&#x27;;
 
+/**
+ * SmartNodeSocket
+ */
 @Injectable()
+
 export class SmartNodeSocket extends Socket {
+  /**
+   * Private property node
+   * @type {Object}
+  */
   private node: any;
 
+  /**
+   * Constructor Method
+   * @param {Object} node
+   * @param {Object} wallet
+   * @param {string} namespace
+   * @returns {SmartNodeSocket}
+   */
   constructor(
-    @Inject(Object) node: any, 
+    @Inject(Object) node: any,
     @Inject(Object) wallet: any,
     @Inject(Object) namespace: string &#x3D; &#x27;smart-node&#x27;
   ) {
@@ -297,6 +334,10 @@ export class SmartNodeSocket extends Socket {
     this.node &#x3D; node;
   }
 
+  /**
+   * getNode Method
+   * @returns {Object}
+   */
   getNode(): any {
     return this.node;
   }
