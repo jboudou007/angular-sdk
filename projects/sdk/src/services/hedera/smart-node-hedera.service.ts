@@ -3,17 +3,13 @@ import {
   AccountId, 
   Hbar, 
   HbarUnit, 
-  NftId, 
   TokenAssociateTransaction, 
-  TokenId, 
   Transaction, 
   TransactionId, 
   TransactionReceipt, 
   TransferTransaction 
 } from '@hashgraph/sdk';
 import { SmartNodeHashPackService } from '../hashpack/smart-node-hashpack.service';
-import axios from 'axios';
-import lodash from 'lodash';
 import { SmartNodeRestService } from '../rest/smart-node-rest.service';
 import Decimal from 'decimal.js';
 
@@ -249,54 +245,6 @@ export class SmartNodeHederaService {
         }
 
         resolve(responseData);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  }
-
-  public async getAccountNftTokens(accountId: string): Promise<any> {
-    return new Promise(async(resolve, reject) => {
-      try {
-        let nftUrl = null;
-
-        switch (this.network) {
-          case 'local':
-          case 'testnet':
-            nftUrl = `https://testnet.mirrornode.hedera.com/api/v1/accounts/${accountId}/nfts`;
-            break;
-          case 'mainnet':
-            nftUrl = `https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/${accountId}/nfts`;
-            break;
-        }
-
-        let nftTokens = new Array<any>();
-
-        let response = await axios.get(nftUrl);
-        nftTokens = nftTokens.concat(response.data.nfts);
-
-        while (response.data.links.next) {
-          let next = lodash.get(response.data.links.next.split("?"), 1);
-          response = await axios.get(`${nftUrl}?${next}`);
-          nftTokens = nftTokens.concat(response.data.nfts);
-        }
-
-        resolve(nftTokens);
-      } catch(error) {
-        reject(error);
-      }
-    });
-  }
-
-  public async getAccountLpNftTokens(accountId: string, details?: boolean): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let nftTokens = await this.getAccountNftTokens(accountId);
-        nftTokens = nftTokens.filter((nft: any) => nft.token_id == this.utilities.lpHSuite.id);
-        let serialNumbers = nftTokens.map((x: any) => x.serial_number);
-        
-        let nftDocuments = (await this.smartNodeRestService.loadPositions(this.utilities.lpHSuite.id, serialNumbers)).data;
-        resolve(nftDocuments);
       } catch (error) {
         reject(error);
       }
