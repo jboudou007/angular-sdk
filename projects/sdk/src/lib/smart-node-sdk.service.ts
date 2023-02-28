@@ -7,14 +7,38 @@ import { SmartNodeRestService } from '../services/rest/smart-node-rest.service';
 import { SmartNodeSocketsService } from '../services/sockets/smart-node-sockets.service';
 import * as lodash from 'lodash';
 
+/**
+ * SmartNodeSdkService
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class SmartNodeSdkService {
+  /**
+   * Private property eventsObserver
+   */ 
   private eventsObserver = new Subject<any>();
+
+  /**
+   * Private property eventsObservable
+   */ 
   private eventsObservable = this.eventsObserver.asObservable();
+
+  /**
+   * Private property hashpackWallet
+   */   
   private hashpackWallet = null;
   
+  /**
+   * Constructor Method
+   * @param {smartNodeNetworkService} smartNodeNetworkService
+   * * @param {smartNodeRestService} smartNodeRestService
+   * * @param {smartNodeSocketsService} smartNodeSocketsService
+   * * @param {smartNodeHashPackService} smartNodeHashPackService
+   * * @param {smartNodeNetworkService} smartNodeNetworkService
+   * * @param {'mainnet' | 'testnet' | 'local'} network
+   * * @param {string} node
+   */
   constructor(
     private smartNodeNetworkService: SmartNodeNetworkService,
     private smartNodeRestService: SmartNodeRestService,
@@ -83,18 +107,29 @@ export class SmartNodeSdkService {
     });
   }
 
-  getEventsObserver(): Observable<any> {
-    return this.eventsObservable;
-  }
-
+  /**
+   * Private method for error handling.
+   * @param event
+   * @returns Promise<any>
+   */  
   private async handleErrors(event: any): Promise<any> {
     this.eventsObserver.next(event);
   }
 
+  /**
+   * Private method for events handling.
+   * @param event
+   * @returns Promise<any>
+   */    
   private async handleGenericEvents(event: any): Promise<any> {
     this.eventsObserver.next(event);
   }
 
+  /**
+   * Private method for authentication handling.
+   * @param event
+   * @returns Promise<void>
+   */  
   private async handleAuthEvent(event: any): Promise<void> {
     switch(event.method) {
       case 'authentication':
@@ -148,6 +183,11 @@ export class SmartNodeSdkService {
     }    
   }
 
+  /**
+   * Private method to initialize the websockets.
+   * @param hashconnectData
+   * @returns Promise<string>
+   */  
   private _initSockets(hashconnectData: any): Promise<string> {
    return new Promise(async(resolve, reject) => {
     try {
@@ -164,22 +204,50 @@ export class SmartNodeSdkService {
    })
   }
 
+  /**
+   * Retrieves the events observer, to subscribe to events from the SmartNode Network.
+   * @returns Observable<any>
+   */
+  getEventsObserver(): Observable<any> {
+    return this.eventsObservable;
+  }
+
+  /**
+   * Retrieves Network Service, to interact with the SmartNode Network.
+   * @returns SmartNodeNetworkService
+   */
   public getNetworkService(): SmartNodeNetworkService {
     return this.smartNodeNetworkService;
   }
 
+  /**
+   * Retrieves HashPack Service, to interact with the SmartNode HashPack.
+   * @returns SmartNodeHashPackService
+   */
   public getHashPackService(): SmartNodeHashPackService {
     return this.smartNodeHashPackService;
   }
   
+  /**
+   * Retrieves the Rest Service, to interact with the SmartNode Rest API.
+   * @returns SmartNodeRestService
+   */
   public getRestService(): SmartNodeRestService {
     return this.smartNodeRestService;
   }
 
+  /**
+   * Retrieves the Sockets Service, to interact with the SmartNode Sockets API.
+   * @returns SmartNodeSocketsService
+   */  
   public getSocketsService(): SmartNodeSocketsService {
     return this.smartNodeSocketsService;
   }
 
+  /**
+   * Retrieves the Hedera Service, to interact with the SmartNode Hedera API.
+   * @returns SmartNodeHederaService
+   */
   public getHederaService(): SmartNodeHederaService {
     return this.smartNodeHederaService;
   }

@@ -62,6 +62,13 @@
         </p>
 
 
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>SmartNodeSdkService</p>
+
+            </p>
 
 
 
@@ -166,12 +173,22 @@
                 </tr>
                         <tr>
                             <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:16</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:30</a></div>
                             </td>
                         </tr>
 
                 <tr>
                     <td class="col-md-4">
+                            <div class="io-description"><p>Constructor Method</p>
+<ul>
+<li>@param {smartNodeRestService} smartNodeRestService</li>
+<li>@param {smartNodeSocketsService} smartNodeSocketsService</li>
+<li>@param {smartNodeHashPackService} smartNodeHashPackService</li>
+<li>@param {smartNodeNetworkService} smartNodeNetworkService</li>
+<li>@param {&#39;mainnet&#39; | &#39;testnet&#39; | &#39;local&#39;} network</li>
+<li>@param {string} node</li>
+</ul>
+</div>
                             <div>
                                     <b>Parameters :</b>
                                     <table class="params">
@@ -180,6 +197,7 @@
                                                 <td>Name</td>
                                                     <td>Type</td>
                                                 <td>Optional</td>
+                                                    <td>Description</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -194,6 +212,12 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <ul>
+<li></li>
+</ul>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>smartNodeRestService</td>
@@ -206,6 +230,12 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <ul>
+<li></li>
+</ul>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>smartNodeSocketsService</td>
@@ -218,6 +248,12 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <ul>
+<li></li>
+</ul>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>smartNodeHashPackService</td>
@@ -230,6 +266,12 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <ul>
+<li></li>
+</ul>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>smartNodeHederaService</td>
@@ -242,6 +284,8 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>network</td>
@@ -254,6 +298,12 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                                <ul>
+<li></li>
+</ul>
+
+                                                        </td>
                                                 </tr>
                                                 <tr>
                                                         <td>node</td>
@@ -266,6 +316,8 @@
                                                             No
                                                     </td>
                                                     
+                                                        <td>
+                                                        </td>
                                                 </tr>
                                         </tbody>
                                     </table>
@@ -303,14 +355,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="151"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:151</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="191"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:191</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Private method to initialize the websockets.</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -346,7 +400,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>Promise<string></p>
+
                     </div>
                 </td>
             </tr>
@@ -372,17 +427,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="86"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:86</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="211"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:211</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves the events observer, to subscribe to events from the SmartNode Network.</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>Observable<any></p>
 
                     </div>
                 </td>
@@ -411,17 +474,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="171"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:171</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="227"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:227</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves HashPack Service, to interact with the SmartNode HashPack.</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../injectables/SmartNodeHashPackService.html" target="_self" >SmartNodeHashPackService</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>SmartNodeHashPackService</p>
 
                     </div>
                 </td>
@@ -450,17 +521,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="183"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:183</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="251"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:251</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves the Hedera Service, to interact with the SmartNode Hedera API.</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../injectables/SmartNodeHederaService.html" target="_self" >SmartNodeHederaService</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>SmartNodeHederaService</p>
 
                     </div>
                 </td>
@@ -489,17 +568,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="167"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:167</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="219"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:219</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves Network Service, to interact with the SmartNode Network.</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../injectables/SmartNodeNetworkService.html" target="_self" >SmartNodeNetworkService</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>SmartNodeNetworkService</p>
 
                     </div>
                 </td>
@@ -528,17 +615,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="175"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:175</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="235"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:235</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves the Rest Service, to interact with the SmartNode Rest API.</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../injectables/SmartNodeRestService.html" target="_self" >SmartNodeRestService</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>SmartNodeRestService</p>
 
                     </div>
                 </td>
@@ -567,17 +662,25 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="179"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:179</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="243"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:243</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Retrieves the Sockets Service, to interact with the SmartNode Sockets API.</p>
+</div>
 
+                    <div>
+                    </div>
                     <div class="io-description">
                         <b>Returns : </b>        <code><a href="../injectables/SmartNodeSocketsService.html" target="_self" >SmartNodeSocketsService</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        <p>SmartNodeSocketsService</p>
 
                     </div>
                 </td>
@@ -607,14 +710,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="98"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:98</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="133"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:133</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Private method for authentication handling.</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -650,7 +755,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>Promise<void></p>
+
                     </div>
                 </td>
             </tr>
@@ -679,14 +785,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="90"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:90</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="115"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:115</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Private method for error handling.</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -722,7 +830,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>Promise<any></p>
+
                     </div>
                 </td>
             </tr>
@@ -751,14 +860,16 @@
 
             <tr>
                 <td class="col-md-4">
-                    <div class="io-line">Defined in <a href="" data-line="94"
-                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:94</a></div>
+                    <div class="io-line">Defined in <a href="" data-line="124"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:124</a></div>
                 </td>
             </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                    <div class="io-description"><p>Private method for events handling.</p>
+</div>
 
                     <div class="io-description">
                         <b>Parameters :</b>
@@ -794,7 +905,8 @@
 
                     </div>
                     <div class="io-description">
-                        
+                        <p>Promise<any></p>
+
                     </div>
                 </td>
             </tr>
@@ -825,10 +937,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:15</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="25" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:25</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Private property eventsObservable</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -851,10 +969,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:14</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="20" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:20</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Private property eventsObserver</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -883,10 +1007,16 @@
                 </tr>
                     <tr>
                         <td class="col-md-4">
-                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:16</a></div>
+                                <div class="io-line">Defined in <a href="" data-line="30" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:30</a></div>
                         </td>
                     </tr>
 
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>Private property hashpackWallet</p>
+</div>
+                </td>
+            </tr>
 
         </tbody>
     </table>
@@ -905,14 +1035,38 @@ import { SmartNodeRestService } from &#x27;../services/rest/smart-node-rest.serv
 import { SmartNodeSocketsService } from &#x27;../services/sockets/smart-node-sockets.service&#x27;;
 import * as lodash from &#x27;lodash&#x27;;
 
+/**
+ * SmartNodeSdkService
+ */
 @Injectable({
   providedIn: &#x27;root&#x27;
 })
 export class SmartNodeSdkService {
+  /**
+   * Private property eventsObserver
+   */ 
   private eventsObserver &#x3D; new Subject&lt;any&gt;();
+
+  /**
+   * Private property eventsObservable
+   */ 
   private eventsObservable &#x3D; this.eventsObserver.asObservable();
+
+  /**
+   * Private property hashpackWallet
+   */   
   private hashpackWallet &#x3D; null;
   
+  /**
+   * Constructor Method
+   * @param {smartNodeNetworkService} smartNodeNetworkService
+   * * @param {smartNodeRestService} smartNodeRestService
+   * * @param {smartNodeSocketsService} smartNodeSocketsService
+   * * @param {smartNodeHashPackService} smartNodeHashPackService
+   * * @param {smartNodeNetworkService} smartNodeNetworkService
+   * * @param {&#x27;mainnet&#x27; | &#x27;testnet&#x27; | &#x27;local&#x27;} network
+   * * @param {string} node
+   */
   constructor(
     private smartNodeNetworkService: SmartNodeNetworkService,
     private smartNodeRestService: SmartNodeRestService,
@@ -981,18 +1135,29 @@ export class SmartNodeSdkService {
     });
   }
 
-  getEventsObserver(): Observable&lt;any&gt; {
-    return this.eventsObservable;
-  }
-
+  /**
+   * Private method for error handling.
+   * @param event
+   * @returns Promise&lt;any&gt;
+   */  
   private async handleErrors(event: any): Promise&lt;any&gt; {
     this.eventsObserver.next(event);
   }
 
+  /**
+   * Private method for events handling.
+   * @param event
+   * @returns Promise&lt;any&gt;
+   */    
   private async handleGenericEvents(event: any): Promise&lt;any&gt; {
     this.eventsObserver.next(event);
   }
 
+  /**
+   * Private method for authentication handling.
+   * @param event
+   * @returns Promise&lt;void&gt;
+   */  
   private async handleAuthEvent(event: any): Promise&lt;void&gt; {
     switch(event.method) {
       case &#x27;authentication&#x27;:
@@ -1046,6 +1211,11 @@ export class SmartNodeSdkService {
     }    
   }
 
+  /**
+   * Private method to initialize the websockets.
+   * @param hashconnectData
+   * @returns Promise&lt;string&gt;
+   */  
   private _initSockets(hashconnectData: any): Promise&lt;string&gt; {
    return new Promise(async(resolve, reject) &#x3D;&gt; {
     try {
@@ -1062,22 +1232,50 @@ export class SmartNodeSdkService {
    })
   }
 
+  /**
+   * Retrieves the events observer, to subscribe to events from the SmartNode Network.
+   * @returns Observable&lt;any&gt;
+   */
+  getEventsObserver(): Observable&lt;any&gt; {
+    return this.eventsObservable;
+  }
+
+  /**
+   * Retrieves Network Service, to interact with the SmartNode Network.
+   * @returns SmartNodeNetworkService
+   */
   public getNetworkService(): SmartNodeNetworkService {
     return this.smartNodeNetworkService;
   }
 
+  /**
+   * Retrieves HashPack Service, to interact with the SmartNode HashPack.
+   * @returns SmartNodeHashPackService
+   */
   public getHashPackService(): SmartNodeHashPackService {
     return this.smartNodeHashPackService;
   }
   
+  /**
+   * Retrieves the Rest Service, to interact with the SmartNode Rest API.
+   * @returns SmartNodeRestService
+   */
   public getRestService(): SmartNodeRestService {
     return this.smartNodeRestService;
   }
 
+  /**
+   * Retrieves the Sockets Service, to interact with the SmartNode Sockets API.
+   * @returns SmartNodeSocketsService
+   */  
   public getSocketsService(): SmartNodeSocketsService {
     return this.smartNodeSocketsService;
   }
 
+  /**
+   * Retrieves the Hedera Service, to interact with the SmartNode Hedera API.
+   * @returns SmartNodeHederaService
+   */
   public getHederaService(): SmartNodeHederaService {
     return this.smartNodeHederaService;
   }
