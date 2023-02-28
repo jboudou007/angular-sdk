@@ -43,7 +43,7 @@ import { SmartNodeSdkModule } from 'src/app/services/src/lib/smart-node-sdk.modu
     SmartNodeSdkModule
   ],
   providers: [
-    { provide: 'network', useValue: environment.network}
+    { provide: 'network', useValue: 'mainnet'}
   ],
   bootstrap: [AppComponent]
 })
@@ -91,125 +91,34 @@ Nodes will be validating the requested transaction, and sign it if all the valid
 
 ### SmartNodeSdkService
 The easiest way to use this SDK is to interact only with the `SmartNodeSdkService`.
+There are few methods to help you out interacting with the all underlying layer.
 
-#### reserveNft
+The EventsObserver will provide you an easy access to all events triggered by the SmartNode Network.
 ```js
-public async reserveNft(tokenId: string, walletId: string): Promise<number>
+getEventsObserver()
 ```
 
-#### mintLpNft
+The NetworkService provides all the methods you might need in order to interact with the SmartNode Network on a lower level.
 ```js
-  public async mintLpNft(
-  joinPool: {
-    baseToken: {
-      id: string,
-      amount: Decimal,
-      decimals: Decimal
-    },
-    swapToken: {
-      id: string,
-      amount: Decimal
-      decimals: Decimal
-    }
-  }): Promise<any>
+getNetworkService()
 ```
 
-#### burnLpNft
+The HashPackService is basically wrapping all the interactions with HashPask into an easy-to-use service, so to avoid any headacke. 
 ```js
-public async burnLpNft(serialNumber: number): Promise<TransactionReceipt>
+getHashPackService()
 ```
 
-#### launchpadNftTransaction
+The RestService provides all the methods you need to interact with the SmartNode HTTP GET Methods (read-only)
 ```js
-  public launchpadNftTransaction(
-    launchpadDocument: any,
-    senderId: string,
-    hbarAmount: Decimal,
-    serialNumber: number,
-    tokenId: string,
-    memo?: string,
-    fees?: any,
-    returnTransaction?: boolean    
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}>
+getRestService()
 ```
 
-#### launchpadTransaction
+The SocketService handles all the websockets connections on a low level, keeping track of healthy nodes and providing an easy-to-handle interface.
 ```js
-  public launchpadTransaction(
-    launchpadDocument: any,
-    senderId: string,
-    hbarAmount: Decimal,
-    tokenAmount: number,
-    tokenId: string,
-    tokenDecimals: number,
-    memo?: string,
-    fees?: any,
-    returnTransaction?: boolean   
-  ): Promise<{status: 'SUCCESS' | 'ERROR', payload: any}>
+getSocketsService()
 ```
 
-#### sendSwapTransaction
+The HederaService offers some methods (like AssociateToken for example), to facilitate some interaction by wrapping the most common use cases.
 ```js
-  public sendSwapTransaction(
-    senderId: string,
-    swap: any,
-    routing: any,
-    fees?: Array<any>,
-    memo?: string,
-    returnTransaction?: boolean    
-  ): Promise<any>
-```
-
-#### exitPoolTransaction
-```js
-  public exitPoolTransaction(
-    senderId: string,
-    poolWalletId: string,
-    exitPool: {
-      baseToken: {
-        id: string,
-        amount: Decimal,
-        decimals: number
-      },
-      swapToken: {
-        id: string,
-        amount: Decimal,
-        decimals: number
-      }
-    },
-    nft: {
-      tokenId: string,
-      serialNumber: number
-    },
-    memo?: string,
-    fees?: Array<any>,
-    returnTransaction?: boolean    
-  ): Promise<any>
-```
-
-#### joinPoolTransaction
-```js
-  public joinPoolTransaction(
-    senderId: string,
-    poolWalletId: string,
-    joinPool: {
-      baseToken: {
-        id: string,
-        amount: Decimal,
-        decimals: number
-      },
-      swapToken: {
-        id: string,
-        amount: Decimal,
-        decimals: number
-      }
-    },
-    nft: {
-      tokenId: string,
-      serialNumber: number
-    },
-    memo?: string,
-    fees?: Array<any>,
-    returnTransaction?: boolean  
-  ): Promise<any>
+getHederaService()
 ```

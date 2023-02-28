@@ -1,0 +1,1160 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>@hsuite/angular-sdk documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">@hsuite/angular-sdk documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Injectables</li>
+  <li >SmartNodeSdkService</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>projects/sdk/src/lib/smart-node-sdk.service.ts</code>
+        </p>
+
+
+
+
+
+            <section>
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#eventsObservable" >eventsObservable</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#eventsObserver" >eventsObserver</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#hashpackWallet" >hashpackWallet</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#_initSockets" >_initSockets</a>
+                            </li>
+                            <li>
+                                <a href="#getEventsObserver" >getEventsObserver</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getHashPackService" >getHashPackService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getHederaService" >getHederaService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getNetworkService" >getNetworkService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getRestService" >getRestService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Public</span>
+                                <a href="#getSocketsService" >getSocketsService</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#handleAuthEvent" >handleAuthEvent</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#handleErrors" >handleErrors</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#handleGenericEvents" >handleGenericEvents</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(smartNodeNetworkService: <a href="../injectables/SmartNodeNetworkService.html" target="_self">SmartNodeNetworkService</a>, smartNodeRestService: <a href="../injectables/SmartNodeRestService.html" target="_self">SmartNodeRestService</a>, smartNodeSocketsService: <a href="../injectables/SmartNodeSocketsService.html" target="_self">SmartNodeSocketsService</a>, smartNodeHashPackService: <a href="../injectables/SmartNodeHashPackService.html" target="_self">SmartNodeHashPackService</a>, smartNodeHederaService: <a href="../injectables/SmartNodeHederaService.html" target="_self">SmartNodeHederaService</a>, network: "mainnet" | "testnet" | "local", node: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:16</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>smartNodeNetworkService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SmartNodeNetworkService.html" target="_self" >SmartNodeNetworkService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>smartNodeRestService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SmartNodeRestService.html" target="_self" >SmartNodeRestService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>smartNodeSocketsService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SmartNodeSocketsService.html" target="_self" >SmartNodeSocketsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>smartNodeHashPackService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SmartNodeHashPackService.html" target="_self" >SmartNodeHashPackService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>smartNodeHederaService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/SmartNodeHederaService.html" target="_self" >SmartNodeHederaService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>network</td>
+                                                  
+                                                        <td>
+                                                                    <code>&quot;mainnet&quot; | &quot;testnet&quot; | &quot;local&quot;</code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>node</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="_initSockets"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span ><b>_initSockets</b></span>
+                        <a href="#_initSockets"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>_initSockets(hashconnectData: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="151"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:151</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>hashconnectData</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Promise&lt;string&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getEventsObserver"></a>
+                    <span class="name">
+                        <span ><b>getEventsObserver</b></span>
+                        <a href="#getEventsObserver"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>getEventsObserver()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="86"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:86</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Observable&lt;any&gt;</code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getHashPackService"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>getHashPackService</b></span>
+                        <a href="#getHashPackService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getHashPackService()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="171"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:171</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../injectables/SmartNodeHashPackService.html" target="_self" >SmartNodeHashPackService</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getHederaService"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>getHederaService</b></span>
+                        <a href="#getHederaService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getHederaService()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="183"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:183</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../injectables/SmartNodeHederaService.html" target="_self" >SmartNodeHederaService</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getNetworkService"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>getNetworkService</b></span>
+                        <a href="#getNetworkService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getNetworkService()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="167"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:167</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../injectables/SmartNodeNetworkService.html" target="_self" >SmartNodeNetworkService</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getRestService"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>getRestService</b></span>
+                        <a href="#getRestService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getRestService()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="175"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:175</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../injectables/SmartNodeRestService.html" target="_self" >SmartNodeRestService</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="getSocketsService"></a>
+                    <span class="name">
+                        <span class="modifier">Public</span>
+                        <span ><b>getSocketsService</b></span>
+                        <a href="#getSocketsService"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>getSocketsService()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="179"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:179</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Returns : </b>        <code><a href="../injectables/SmartNodeSocketsService.html" target="_self" >SmartNodeSocketsService</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleAuthEvent"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>handleAuthEvent</b></span>
+                        <a href="#handleAuthEvent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handleAuthEvent(event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="98"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:98</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Promise&lt;void&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleErrors"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>handleErrors</b></span>
+                        <a href="#handleErrors"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handleErrors(event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="90"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:90</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleGenericEvents"></a>
+                    <span class="name">
+                        <span class="modifier">Private</span>
+                        <span class="modifier">Async</span>
+                        <span ><b>handleGenericEvents</b></span>
+                        <a href="#handleGenericEvents"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                    <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handleGenericEvents(event: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">Defined in <a href="" data-line="94"
+                            class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:94</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                    <div class="io-description">
+                        <b>Parameters :</b>
+                        
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Type</td>
+                                    <td>Optional</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>event</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        No
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>Returns : </b>    <code>Promise&lt;any&gt;</code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section>
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="eventsObservable"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>eventsObservable</b></span>
+                        <a href="#eventsObservable"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>this.eventsObserver.asObservable()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="15" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:15</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="eventsObserver"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>eventsObserver</b></span>
+                        <a href="#eventsObserver"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>new Subject&lt;any&gt;()</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="14" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:14</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="hashpackWallet"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>hashpackWallet</b></span>
+                        <a href="#hashpackWallet"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>    <code>null</code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>null</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="16" class="link-to-prism">projects/sdk/src/lib/smart-node-sdk.service.ts:16</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Inject, Injectable } from &#x27;@angular/core&#x27;;
+import { Observable, Subject } from &#x27;rxjs&#x27;;
+import { SmartNodeHashPackService } from &#x27;../services/hashpack/smart-node-hashpack.service&#x27;;
+import { SmartNodeHederaService } from &#x27;../services/hedera/smart-node-hedera.service&#x27;;
+import { SmartNodeNetworkService } from &#x27;../services/network/smart-node-network.service&#x27;;
+import { SmartNodeRestService } from &#x27;../services/rest/smart-node-rest.service&#x27;;
+import { SmartNodeSocketsService } from &#x27;../services/sockets/smart-node-sockets.service&#x27;;
+import * as lodash from &#x27;lodash&#x27;;
+
+@Injectable({
+  providedIn: &#x27;root&#x27;
+})
+export class SmartNodeSdkService {
+  private eventsObserver &#x3D; new Subject&lt;any&gt;();
+  private eventsObservable &#x3D; this.eventsObserver.asObservable();
+  private hashpackWallet &#x3D; null;
+  
+  constructor(
+    private smartNodeNetworkService: SmartNodeNetworkService,
+    private smartNodeRestService: SmartNodeRestService,
+    private smartNodeSocketsService: SmartNodeSocketsService,
+    private smartNodeHashPackService: SmartNodeHashPackService,
+    private smartNodeHederaService: SmartNodeHederaService,
+    @Inject(&#x27;network&#x27;) private network: &#x27;mainnet&#x27; | &#x27;testnet&#x27; | &#x27;local&#x27;,
+    @Inject(&#x27;node&#x27;) private node: string
+  ) {
+    // initializing the HSuite Network from the code-nodes...
+    this.smartNodeNetworkService.setNetwork(this.network, this.node).then(async() &#x3D;&gt; {
+      console.log(&#x60;network has been initialized correctly, all new nodes have been fetched and ready to be used.&#x60;);
+
+      try {
+        let utilities &#x3D; (await this.smartNodeRestService.getUtilities()).data;
+        this.smartNodeHederaService.setUtilities(utilities);
+        
+        let hashconnectData &#x3D; await this.smartNodeHashPackService.loadHashconnectData();
+        this.hashpackWallet &#x3D; lodash.get(hashconnectData.accountIds, 0);
+
+        let message &#x3D; await this._initSockets(hashconnectData);
+        console.log(message);
+        
+        // subscribing to the nodeObserver, to monitor if a node goes down, and the service switches to a new one...
+        this.smartNodeNetworkService.getNodeObserver().subscribe(async (node) &#x3D;&gt; {
+          let mainSocket &#x3D; this.smartNodeSocketsService.getMainSocket();
+
+          // if we received a notification, we check if the new node is different than the one used with the mainSocket...
+          if(mainSocket &amp;&amp; mainSocket.getNode().operator !&#x3D; node.operator) {
+            // and we re-establish a secure connection by initializing an new auth session...
+            await this.smartNodeSocketsService.initAuth(this.hashpackWallet, this.smartNodeNetworkService.getCurrentNode());
+            await this.smartNodeSocketsService.authorizeWallet();
+          }
+        });          
+      } catch(error) {
+        console.error(error);
+      }
+
+      // subscribing to login/logout events...
+      this.smartNodeHashPackService.observeHashpackConnection.subscribe(async (hashconnectData) &#x3D;&gt; {
+        try {
+          let message &#x3D; await this._initSockets(hashconnectData);
+          this.hashpackWallet &#x3D; lodash.get(hashconnectData.accountIds, 0);
+          console.log(message);
+        } catch(error) {
+          console.error(error);
+        }
+      });
+
+      // subscribing to websockets authentication events...
+      this.smartNodeSocketsService.getSocketObserver().subscribe(async(event) &#x3D;&gt; {
+        switch(event.event) {
+          case &#x27;auth&#x27;:
+            await this.handleAuthEvent(event.content);
+            break;
+          case &#x27;events&#x27;:
+            await this.handleGenericEvents(event.content);
+            break;
+          case &#x27;errors&#x27;:
+            await this.handleErrors(event.content);     
+            break;       
+        }
+      });
+    }).catch(error &#x3D;&gt; {
+      throw new Error(error.message);
+    });
+  }
+
+  getEventsObserver(): Observable&lt;any&gt; {
+    return this.eventsObservable;
+  }
+
+  private async handleErrors(event: any): Promise&lt;any&gt; {
+    this.eventsObserver.next(event);
+  }
+
+  private async handleGenericEvents(event: any): Promise&lt;any&gt; {
+    this.eventsObserver.next(event);
+  }
+
+  private async handleAuthEvent(event: any): Promise&lt;void&gt; {
+    switch(event.method) {
+      case &#x27;authentication&#x27;:
+        try {
+          let authResponse &#x3D; await this.smartNodeHashPackService.getAuthSession();
+
+          if(!authResponse) {
+            this.eventsObserver.next(event);
+
+            let signedData &#x3D; {
+              signature: new Uint8Array(event.data.authResponse.signedData.signature),
+              serverSigningAccount: event.data.authResponse.signedData.serverSigningAccount
+            };
+
+            authResponse &#x3D; await this.smartNodeHashPackService.authenticateWallet(
+              event.data.wallet,
+              signedData,
+              event.data.authResponse.payload
+            );             
+          }
+
+          if (authResponse.success) {
+            this.smartNodeSocketsService.getMainSocket().emit(&#x27;authenticate&#x27;, {
+              signedData: authResponse,
+              walletId: event.data.wallet
+            });
+          } else {
+            this.eventsObserver.next({
+              title: &#x27;Authentication Failed&#x27;,
+              message: &#x27;You need to authenticate your wallet in order to safely use the app.&#x27;,
+              method: &#x27;error&#x27;,
+              mode: &#x27;warning&#x27;
+            });
+          }
+        } catch(error: any) {
+          this.eventsObserver.next({
+            title: &#x27;Authentication Error&#x27;,
+            message: error.message,
+            method: &#x27;error&#x27;,
+            mode: &#x27;danger&#x27;
+          });
+        }
+        break;
+      case &#x27;authenticate&#x27;:
+        if(event.type &#x3D;&#x3D; &#x27;warning&#x27;) {
+          this.smartNodeHashPackService.clearAuthSession();
+        }
+
+        this.eventsObserver.next(event); 
+      break;
+    }    
+  }
+
+  private _initSockets(hashconnectData: any): Promise&lt;string&gt; {
+   return new Promise(async(resolve, reject) &#x3D;&gt; {
+    try {
+      await this.smartNodeSocketsService.init(
+        this.smartNodeNetworkService.getCurrentNode(),
+        hashconnectData,
+        (await this.smartNodeNetworkService.getNetwork()).data
+      );
+      
+      resolve(&quot;all sockets have been initialized correctly.&quot;);
+    } catch(error) {
+      reject(error);
+    }     
+   })
+  }
+
+  public getNetworkService(): SmartNodeNetworkService {
+    return this.smartNodeNetworkService;
+  }
+
+  public getHashPackService(): SmartNodeHashPackService {
+    return this.smartNodeHashPackService;
+  }
+  
+  public getRestService(): SmartNodeRestService {
+    return this.smartNodeRestService;
+  }
+
+  public getSocketsService(): SmartNodeSocketsService {
+    return this.smartNodeSocketsService;
+  }
+
+  public getHederaService(): SmartNodeHederaService {
+    return this.smartNodeHederaService;
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'SmartNodeSdkService.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
