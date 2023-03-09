@@ -17,15 +17,13 @@ export class SmartNodeSocket extends Socket {
    * Constructor Method
    * @param {Object} node
    * @param {Object} wallet
-   * @param {string} namespace
    * @returns {SmartNodeSocket}
    */
   constructor(
     @Inject(Object) node: any,
-    @Inject(Object) wallet: any,
-    @Inject(Object) namespace: string = 'smart-node'
+    @Inject(Object) wallet: any
   ) {
-    node.url = `${node.url.replace('https://', 'wss://').replace('http://', 'ws://')}/${namespace}`;
+    node.url = `${node.url.replace('https://', 'wss://').replace('http://', 'ws://')}`;
 
     super({
       url: node.url,
