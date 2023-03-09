@@ -163,7 +163,6 @@ export class SmartNodeRestService {
   public async getAccountBalance(accountId: string, tokenId?: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        if(!tokenId) tokenId = '0.0.0.0';
         let response = await this.smartNodeNetworkService.getApiEndpoint(
           `wallets/balance`,
           {
