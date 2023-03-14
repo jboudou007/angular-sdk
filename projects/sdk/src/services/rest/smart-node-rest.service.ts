@@ -226,10 +226,6 @@ export class SmartNodeRestService {
         let response = await this.smartNodeNetworkService.getApiEndpoint(`tokens/list`);
         let node = this.smartNodeNetworkService.getCurrentNode();
 
-        response.forEach((data: any) => {
-          data.image = `${node.url}/${data.image}`
-        });
-
         resolve({
           function: 'loadTokens',
           node: node,
