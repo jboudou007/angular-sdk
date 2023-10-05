@@ -27,8 +27,8 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@capacitor/storage": "^1.2.5",
-    "@hashgraph/sdk": "^2.25.0",
+    "@capacitor/preferences": "^5.0.6",
+    "@hashgraph/sdk": "^2.35.0",
     "@types/lodash": "^4.14.184",
     "axios": "^0.27.2",
     "decimal.js": "^10.4.0",

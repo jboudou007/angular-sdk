@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Node } from './interfaces/node.interface';
 import { Observable, Subject } from 'rxjs';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import axios from 'axios';
 
 /**
@@ -223,7 +223,7 @@ export class SmartNodeNetworkService {
    * @returns Promise<Node>
    */
   public async getRandomNode(override: boolean): Promise<Node> {
-    let auth = await Storage.get({ key: 'hashconnect.auth' });
+    let auth = await Preferences.get({ key: 'hashconnect.auth' });
     let node = null;
 
     if (auth.value && !override) {

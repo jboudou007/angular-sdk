@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { Subject } from 'rxjs';
 import * as lodash from 'lodash';
@@ -67,7 +67,7 @@ export class SmartNodeHashPackService {
       this.hashconnectData.topic = pairingData.topic;
       this.hashconnectData.accountIds = pairingData.accountIds;
 
-      await Storage.set({
+      await Preferences.set({
         key: 'hashconnect.data',
         value: JSON.stringify(this.hashconnectData),
       });
@@ -156,8 +156,8 @@ export class SmartNodeHashPackService {
 
         this.hashconnect.clearConnectionsAndData();
 
-        await Storage.remove({ key: 'hashconnect.data' });
-        await Storage.remove({ key: 'hashconnect.auth' });
+        await Preferences.remove({ key: 'hashconnect.data' });
+        await Preferences.remove({ key: 'hashconnect.auth' });
 
         this.hashconnectData = {
           topic: '',
@@ -180,7 +180,7 @@ export class SmartNodeHashPackService {
   public async loadHashconnectData(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        let hashconnectData = await Storage.get({ key: 'hashconnect.data' });
+        let hashconnectData = await Preferences.get({ key: 'hashconnect.data' });
 
         if (hashconnectData.value) {
           let parsedHashconnectData = JSON.parse(hashconnectData.value);
@@ -241,7 +241,7 @@ export class SmartNodeHashPackService {
   public async clearAuthSession(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        await Storage.remove({ key: 'hashconnect.auth' });
+        await Preferences.remove({ key: 'hashconnect.auth' });
         resolve(true);
       } catch (error) {
         reject(error);
@@ -256,7 +256,7 @@ export class SmartNodeHashPackService {
   public async getAuthSession(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        let auth = await Storage.get({
+        let auth = await Preferences.get({
           key: 'hashconnect.auth'
         });
 
@@ -291,7 +291,7 @@ export class SmartNodeHashPackService {
           payload);
 
         if (authResponse.success) {
-          await Storage.set({
+          await Preferences.set({
             key: 'hashconnect.auth',
             value: JSON.stringify(authResponse),
           });
