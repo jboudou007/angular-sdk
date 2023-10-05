@@ -190,7 +190,7 @@ export class SmartNodeRestService {
    * @returns {Promise<any>}
    */
   public async loadFees(
-    fee: 'tokens' | 'launchpads' | 'daos' | 'multisig' | 'nft_exchange' | 'exchange'
+    fee: 'tokens' | 'launchpads' | 'daos' | 'proposals' | 'votes' | 'multisig' | 'nft_exchange' | 'exchange' | 'cross-chain-exchange'
   ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {

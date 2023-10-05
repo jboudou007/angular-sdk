@@ -76,6 +76,10 @@ export class SmartNodeHashPackService {
     });
   }
 
+  public getInstance(): HashConnect {
+    return this.hashconnect;
+  }
+
   /**
    * Public method getSigner
    * @returns {any}
@@ -100,6 +104,22 @@ export class SmartNodeHashPackService {
   public async connect(network: 'mainnet' | 'testnet' | 'previewnet', type?: string): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
+        await this.init(network);
+
+        if (type == 'hashpack') {
+          this.hashconnect.connectToLocalWallet();
+        }
+
+        resolve(this.hashconnectData.pairingString);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  public async init(network: 'mainnet' | 'testnet' | 'previewnet'): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      try {
         this.network = network;
         let initData = await this.hashconnect.init(this.appMetadata, network, true);
 
@@ -109,11 +129,12 @@ export class SmartNodeHashPackService {
           accountIds: initData.savedPairings[0]?.accountIds
         }
 
-        if (type == 'hashpack') {
-          this.hashconnect.connectToLocalWallet();
-        }
-
-        resolve(this.hashconnectData.pairingString);
+        resolve({
+          hashpack: "init",
+          hashconnectData: JSON.parse(localStorage.getItem("hashconnectData")),
+          appMetadata: this.appMetadata,
+          network: this.network
+        });
       } catch (error) {
         reject(error);
       }

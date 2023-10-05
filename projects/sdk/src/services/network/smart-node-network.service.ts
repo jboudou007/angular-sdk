@@ -89,44 +89,44 @@ export class SmartNodeNetworkService {
     ],
     testnet: [
       {
-        "operator": "0.0.3224",
+        "operator": "0.0.467726",
         "publicKey": "302a300506032b657003210057a3ffed480e36faf916e032435368f2eb9f951a6b58de1a64829336516fdcbf",
         "url": "https://testnet-sn1.hbarsuite.network"
       },
       {
-        "operator": "0.0.3243",
+        "operator": "0.0.467732",
         "publicKey": "302a300506032b6570032100c63e283249e90a6971d71e4c8a1f0bc26a7a7f61f8524c7866a1d8ff779a4ffb",
         "url": "https://testnet-sn2.hbarsuite.network"
       },
       {
-        "operator": "0.0.3266",
+        "operator": "0.0.467734",
         "publicKey": "302a300506032b65700321004530757c566a19027a02fc58c9387739661e727e09e1bc92f1ee2fcde530b391",
         "url": "https://testnet-sn3.hbarsuite.network"
       },
       {
-        "operator": "0.0.3320",
+        "operator": "0.0.467737",
         "publicKey": "302a300506032b6570032100ecb67bdae47babf0d2df87f6b787562357550fac02a5e1ea44b22cc0c1ab2738",
         "url": "https://testnet-sn4.hbarsuite.network"
       }
     ],
     local: [
       {
-        "operator": "0.0.3224",
+        "operator": "0.0.467726",
         "publicKey": "302a300506032b657003210057a3ffed480e36faf916e032435368f2eb9f951a6b58de1a64829336516fdcbf",
         "url": "http://localhost:3001"
       },
       {
-        "operator": "0.0.3243",
+        "operator": "0.0.467732",
         "publicKey": "302a300506032b6570032100c63e283249e90a6971d71e4c8a1f0bc26a7a7f61f8524c7866a1d8ff779a4ffb",
         "url": "http://localhost:3002"
       },
       {
-        "operator": "0.0.3266",
+        "operator": "0.0.467734",
         "publicKey": "302a300506032b65700321004530757c566a19027a02fc58c9387739661e727e09e1bc92f1ee2fcde530b391",
         "url": "http://localhost:3003"
       },
       {
-        "operator": "0.0.3320",
+        "operator": "0.0.467737",
         "publicKey": "302a300506032b6570032100ecb67bdae47babf0d2df87f6b787562357550fac02a5e1ea44b22cc0c1ab2738",
         "url": "http://localhost:3004"
       }
