@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Preferences } from '@capacitor/preferences';
+// import { Preferences } from '@capacitor/preferences';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { Subject } from 'rxjs';
 import * as lodash from 'lodash';
@@ -67,10 +67,12 @@ export class SmartNodeHashPackService {
       this.hashconnectData.topic = pairingData.topic;
       this.hashconnectData.accountIds = pairingData.accountIds;
 
-      await Preferences.set({
-        key: 'hashconnect.data',
-        value: JSON.stringify(this.hashconnectData),
-      });
+      // await Preferences.set({
+      //   key: 'hashconnect.data',
+      //   value: JSON.stringify(this.hashconnectData),
+      // });
+
+      localStorage.setItem('hashconnect.data', JSON.stringify(this.hashconnectData));
 
       this.dataObserver.next(this.hashconnectData);
     });
@@ -156,8 +158,11 @@ export class SmartNodeHashPackService {
 
         this.hashconnect.clearConnectionsAndData();
 
-        await Preferences.remove({ key: 'hashconnect.data' });
-        await Preferences.remove({ key: 'hashconnect.auth' });
+        // await Preferences.remove({ key: 'hashconnect.data' });
+        // await Preferences.remove({ key: 'hashconnect.auth' });
+
+        localStorage.removeItem('hashconnect.data');
+        localStorage.removeItem('hashconnect.auth');
 
         this.hashconnectData = {
           topic: '',
@@ -180,12 +185,15 @@ export class SmartNodeHashPackService {
   public async loadHashconnectData(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        let hashconnectData = await Preferences.get({ key: 'hashconnect.data' });
+        // let hashconnectData = await Preferences.get({ key: 'hashconnect.data' });
+        let hashconnectData = localStorage.getItem('hashconnect.data');
 
-        if (hashconnectData.value) {
-          let parsedHashconnectData = JSON.parse(hashconnectData.value);
+        // if (hashconnectData.value) {
+        if (hashconnectData) {
+          // let parsedHashconnectData = JSON.parse(hashconnectData.value);
+          let parsedHashconnectData = JSON.parse(hashconnectData);
 
-          if (parsedHashconnectData.accountIds.length > 0) {
+          if (parsedHashconnectData.accountIds?.length > 0) {
             this.hashconnectData = parsedHashconnectData;
             resolve(this.hashconnectData);
           } else {
@@ -241,7 +249,8 @@ export class SmartNodeHashPackService {
   public async clearAuthSession(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        await Preferences.remove({ key: 'hashconnect.auth' });
+        // await Preferences.remove({ key: 'hashconnect.auth' });
+        localStorage.removeItem('hashconnect.auth');
         resolve(true);
       } catch (error) {
         reject(error);
@@ -256,14 +265,17 @@ export class SmartNodeHashPackService {
   public async getAuthSession(): Promise<any> {
     return new Promise(async (resolve, reject) => {
       try {
-        let auth = await Preferences.get({
-          key: 'hashconnect.auth'
-        });
+        // let auth = await Preferences.get({
+        //   key: 'hashconnect.auth'
+        // });
 
+        let auth = localStorage.getItem('hashconnect.auth');
         let authResponse = null;
 
-        if (auth.value) {
-          authResponse = JSON.parse(auth.value);
+        // if (auth.value) {
+        if (auth) {
+          // authResponse = JSON.parse(auth.value);
+          authResponse = JSON.parse(auth);
         }
 
         resolve(authResponse);
@@ -291,10 +303,12 @@ export class SmartNodeHashPackService {
           payload);
 
         if (authResponse.success) {
-          await Preferences.set({
-            key: 'hashconnect.auth',
-            value: JSON.stringify(authResponse),
-          });
+          // await Preferences.set({
+          //   key: 'hashconnect.auth',
+          //   value: JSON.stringify(authResponse),
+          // });
+
+          localStorage.setItem('hashconnect.auth', JSON.stringify(authResponse));
         }
 
         resolve(authResponse);

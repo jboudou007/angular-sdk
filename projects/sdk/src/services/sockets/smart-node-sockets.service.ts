@@ -215,7 +215,7 @@ export class SmartNodeSocketsService {
   async initNodes(wallet: string | null, network: Array<Node>): Promise<Array<SmartNodeSocket>> {
     return new Promise(async (resolve, reject) => {
       try {
-        if (this.nodesSockets.length) {
+        if (this.nodesSockets && this.nodesSockets.length) {
           this.nodesSockets.forEach(socket => {
             socket.disconnect();
           });

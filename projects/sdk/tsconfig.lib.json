@@ -3,6 +3,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "outDir": "../../out-tsc/lib",
     "declaration": true,
     "declarationMap": true,
