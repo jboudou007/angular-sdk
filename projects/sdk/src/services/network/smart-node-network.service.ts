@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Node } from './interfaces/node.interface';
 import { Observable, Subject } from 'rxjs';
 import axios from 'axios';
+import * as lodash from 'lodash';
 
 /**
  * SmartNodeNetworkService
@@ -152,51 +153,37 @@ export class SmartNodeNetworkService {
    * @param override
    * @returns Promise<boolean>
     */
-  public async setNetwork(network: 'mainnet' | 'testnet' | 'local', node: string, override: boolean = false): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        // as very first, we setup the core network...
-        this.nodes = this.network[network];
-        // setting a random node to use as default one...
-        if (node == 'random') {
-          await this.shuffleNode(override);
-        } else {
-          this.node = this.getSpecificNode(Number(node));
-        }
-
-        // then we fetch the entire network of nodes, and we update our nodes array...
-        try {
-          let whitelistedNetwork = await this.getNetwork();
-          this.nodes = whitelistedNetwork.data;
-          resolve(true);
-        } catch (error) {
-          resolve(await this.setNetwork(network, node, true));
-        }
-      } catch (error) {
-        reject(error);
-      }
-    })
+  public setNetwork(
+    network: 'mainnet' | 'testnet' | 'local' | 'custom', 
+    node: string, 
+    override: boolean = false,
+    customNetwork: Array<{
+      operator: string,
+      publicKey: string,
+      url: string
+    }>
+  ): void {
+    // as very first, we setup the core network...
+    if(network == 'custom') {
+      this.nodes = lodash.cloneDeep(customNetwork);
+    } else {
+      this.nodes = lodash.cloneDeep(this.network[network]);
+    }
+    
+    // setting a random node to use as default one...
+    if (node == 'random') {
+      this.node = lodash.clone(this.shuffleNode(override));
+    } else {
+      this.node = lodash.clone(this.getSpecificNode(Number(node)));
+    }
   }
 
   /**
    * public method to get the network
    * @returns Promise<any>
    */
-  async getNetwork(): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        // then we call the endpoint to grab the entire list of nodes...
-        let response = await this.getApiEndpoint('smart-node/network');
-        // finally, we can resolve it...
-        resolve({
-          function: 'getNetwork',
-          node: this.node,
-          data: response
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
+  getNetwork(): Array<Node> {
+    return this.nodes;
   }
 
   /**
@@ -213,7 +200,7 @@ export class SmartNodeNetworkService {
    * @returns void
    */
   public setCurrentNode(node: Node): void {
-    this.node = node;
+    this.node = lodash.clone(node);
   }
 
   /**
@@ -221,7 +208,7 @@ export class SmartNodeNetworkService {
    * @param override
    * @returns Promise<Node>
    */
-  public async getRandomNode(override: boolean): Promise<Node> {
+  public getRandomNode(override: boolean): Node {
     let auth = localStorage.getItem('hashconnect.auth');
     let node = null;
 
@@ -253,8 +240,8 @@ export class SmartNodeNetworkService {
    * @param override
    * @returns Promise<void>
    */
-  public async shuffleNode(override: boolean): Promise<void> {
-    this.node = await this.getRandomNode(override);
+  public shuffleNode(override: boolean): Node {
+    return this.getRandomNode(override);
   }
 
   /**
@@ -264,7 +251,7 @@ export class SmartNodeNetworkService {
    */
   public setNodeFromActiveNodes(activeNodes: Array<Node>): void {
     if (activeNodes && activeNodes.length) {
-      this.node = activeNodes[Math.floor(Math.random() * activeNodes.length)];
+      this.node = lodash.clone(activeNodes[Math.floor(Math.random() * activeNodes.length)]);
       this.nodeObserver.next(this.node);
     } else {
       throw new Error(`the list of active nodes can't be empty`);

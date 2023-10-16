@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HashConnect, HashConnectTypes, MessageTypes } from 'hashconnect';
 import { Subject } from 'rxjs';
 import * as lodash from 'lodash';
-import { SmartNodeSocketsService } from '../sockets/smart-node-sockets.service';
 
 /**
  *  SmartNodeHashPackService
@@ -49,11 +48,8 @@ export class SmartNodeHashPackService {
 
   /**
    * Constructor Method
-   * @param {smartNodeSocketsService} smartNodeSocketsService
    */
-  constructor(
-    private smartNodeSocketsService: SmartNodeSocketsService
-  ) {
+  constructor() {
     this.hashconnect = new HashConnect();
 
     this.appMetadata = {
@@ -146,11 +142,10 @@ export class SmartNodeHashPackService {
       try {
         try {
           await this.hashconnect.disconnect(this.hashconnectData.topic);
+          this.hashconnect.clearConnectionsAndData();
         } catch (error) {
           console.error(error);
         }
-
-        this.hashconnect.clearConnectionsAndData();
 
         localStorage.removeItem('hashconnect.data');
         localStorage.removeItem('hashconnect.auth');

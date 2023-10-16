@@ -45,37 +45,26 @@ export class SmartNodeSdkService {
     private smartNodeSocketsService: SmartNodeSocketsService,
     private smartNodeHashPackService: SmartNodeHashPackService,
     private smartNodeHederaService: SmartNodeHederaService,
-    @Inject('network') private network: 'mainnet' | 'testnet' | 'local',
-    @Inject('node') private node: string
+    @Inject('options') private options: {
+      node: string,
+      network: 'mainnet' | 'testnet' | 'local' | 'custom',
+      customNetwork?: Array<{
+        operator: string,
+        publicKey: string,
+        url: string
+      }>
+    }
   ) {
     // initializing the HSuite Network from the code-nodes...
-    this.smartNodeNetworkService.setNetwork(this.network, this.node).then(async () => {
+    this.smartNodeNetworkService.setNetwork(
+      this.options.network, 
+      this.options.node,
+      false,
+      this.options.customNetwork
+    );
+
+    this.init().then(() => {
       console.log(`network has been initialized correctly, all new nodes have been fetched and ready to be used.`);
-
-      try {
-        let utilities = (await this.smartNodeRestService.getUtilities()).data;
-        this.smartNodeHederaService.setUtilities(utilities);
-
-        let hashconnectData = await this.smartNodeHashPackService.loadHashconnectData();
-        this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
-
-        let message = await this._initSockets(hashconnectData);
-        console.log(message);
-
-        // subscribing to the nodeObserver, to monitor if a node goes down, and the service switches to a new one...
-        this.smartNodeNetworkService.getNodeObserver().subscribe(async (node) => {
-          let mainSocket = this.smartNodeSocketsService.getMainSocket();
-
-          // if we received a notification, we check if the new node is different than the one used with the mainSocket...
-          if (mainSocket && mainSocket.getNode().operator != node.operator) {
-            // and we re-establish a secure connection by initializing an new auth session...
-            await this.smartNodeSocketsService.initAuth(this.hashpackWallet, this.smartNodeNetworkService.getCurrentNode());
-            await this.smartNodeSocketsService.authorizeWallet();
-          }
-        });
-      } catch (error) {
-        console.error(error);
-      }
 
       // subscribing to login/logout events...
       this.smartNodeHashPackService.observeHashpackConnection.subscribe(async (hashconnectData) => {
@@ -87,7 +76,7 @@ export class SmartNodeSdkService {
           console.error(error);
         }
       });
-
+  
       // subscribing to websockets authentication events...
       this.smartNodeSocketsService.getSocketObserver().subscribe(async (event) => {
         switch (event.event) {
@@ -101,10 +90,45 @@ export class SmartNodeSdkService {
             await this.handleErrors(event.content);
             break;
         }
+      });        
+    })  
+  }
+
+  async init(): Promise<any> {
+    try {
+      try {
+        let utilities = (await this.smartNodeRestService.getUtilities()).data;
+        this.smartNodeHederaService.setUtilities(utilities);          
+      } catch(error) {
+        console.error(error);
+      }
+
+      let hashconnectData = await this.smartNodeHashPackService.loadHashconnectData();
+      this.hashpackWallet = lodash.get(hashconnectData.accountIds, 0);
+
+      await this._initSockets(hashconnectData);
+
+      this.handleGenericEvents({
+        title: 'SDK Ready',
+        message: 'SDK is now ready to operate.',
+        method: 'sdk_ready',
+        mode: 'success'
+      })
+
+      // subscribing to the nodeObserver, to monitor if a node goes down, and the service switches to a new one...
+      this.smartNodeNetworkService.getNodeObserver().subscribe(async (node) => {
+        let mainSocket = this.smartNodeSocketsService.getMainSocket();
+
+        // if we received a notification, we check if the new node is different than the one used with the mainSocket...
+        if (mainSocket && mainSocket.getNode().operator != node.operator) {
+          // and we re-establish a secure connection by initializing an new auth session...
+          await this.smartNodeSocketsService.initAuth(this.hashpackWallet, this.smartNodeNetworkService.getCurrentNode());
+          await this.smartNodeSocketsService.authorizeWallet();
+        }
       });
-    }).catch(error => {
-      throw new Error(error.message);
-    });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**
@@ -137,21 +161,25 @@ export class SmartNodeSdkService {
           let authResponse = await this.smartNodeHashPackService.getAuthSession();
 
           if (!authResponse) {
-            this.eventsObserver.next(event);
+            let account = await this.smartNodeHashPackService.loadHashconnectData();
 
-            let signedData = {
-              signature: new Uint8Array(event.data.authResponse.signedData.signature),
-              serverSigningAccount: event.data.authResponse.signedData.serverSigningAccount
-            };
+            if(account) {
+              this.eventsObserver.next(event);
 
-            authResponse = await this.smartNodeHashPackService.authenticateWallet(
-              event.data.wallet,
-              signedData,
-              event.data.authResponse.payload
-            );
+              let signedData = {
+                signature: new Uint8Array(event.data.authResponse.signedData.signature),
+                serverSigningAccount: event.data.authResponse.signedData.serverSigningAccount
+              };
+  
+              authResponse = await this.smartNodeHashPackService.authenticateWallet(
+                event.data.wallet,
+                signedData,
+                event.data.authResponse.payload
+              );
+            }
           }
 
-          if (authResponse.success) {
+          if (authResponse && authResponse.success) {
             this.smartNodeSocketsService.getMainSocket().emit('authenticate', {
               signedData: authResponse,
               walletId: event.data.wallet
@@ -194,7 +222,7 @@ export class SmartNodeSdkService {
         await this.smartNodeSocketsService.init(
           this.smartNodeNetworkService.getCurrentNode(),
           hashconnectData,
-          (await this.smartNodeNetworkService.getNetwork()).data
+          this.smartNodeNetworkService.getNetwork()
         );
 
         resolve("all sockets have been initialized correctly.");

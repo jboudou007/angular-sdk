@@ -23,10 +23,10 @@ export class SmartNodeSocket extends Socket {
     @Inject(Object) node: any,
     @Inject(Object) wallet: any
   ) {
-    node.url = `${node.url.replace('https://', 'wss://').replace('http://', 'ws://')}/gateway`;
+    let url = `${node.url.replace('https://', 'wss://').replace('http://', 'ws://')}/gateway`;
 
     super({
-      url: node.url,
+      url: url,
       options: {
         transports: ["websocket"],
         query: {

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { SmartNodeHashPackModule } from '../services/hashpack/smart-node-hashpack.module';
 import { SmartNodeHederaModule } from '../services/hedera/smart-node-hedera.module';
 import { SmartNodeNetworkModule } from '../services/network/smart-node-network.module';
@@ -14,9 +14,19 @@ import { SmartNodeSdkService } from './smart-node-sdk.service';
     SmartNodeHashPackModule,
     SmartNodeHederaModule
   ],
-  providers: [
-    SmartNodeSdkService
-  ],
   exports: []
 })
-export class SmartNodeSdkModule { }
+export class SmartNodeSdkModule {
+  static forRoot(options: any): ModuleWithProviders<SmartNodeSdkModule> {
+    return {
+      ngModule: SmartNodeSdkModule,
+      providers: [
+        {
+          provide: 'options',
+          useValue: options,
+        },
+        SmartNodeSdkService
+      ]
+    }
+  }
+}

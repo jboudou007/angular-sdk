@@ -202,6 +202,7 @@ export class SmartNodeSocketsService {
         });
       });
 
+      this.mainSocket.connect();
       resolve(true);
     });
   }
@@ -233,6 +234,7 @@ export class SmartNodeSocketsService {
           });
 
           nodeSocket.on("connect", async () => {
+            console.log("connect", nodeSocket.getNode().url);
             this.nodesOnline.set(nodeSocket.getNode().url, {
               node: nodeSocket.getNode(),
               online: true
@@ -240,6 +242,7 @@ export class SmartNodeSocketsService {
           });
 
           nodeSocket.on("disconnect", async (event) => {
+            console.log("disconnect", nodeSocket.getNode().url);
             this.nodesOnline.set(nodeSocket.getNode().url, {
               node: nodeSocket.getNode(),
               online: false

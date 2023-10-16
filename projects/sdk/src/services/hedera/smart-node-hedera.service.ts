@@ -7,7 +7,6 @@ import {
   TransactionReceipt
 } from '@hashgraph/sdk';
 import { SmartNodeHashPackService } from '../hashpack/smart-node-hashpack.service';
-import { SmartNodeRestService } from '../rest/smart-node-rest.service';
 
 /**
  * SmartNodeHederaService
@@ -25,15 +24,15 @@ export class SmartNodeHederaService {
 
   /**
    * Constructor Method
-   * @param {SmartNodeHashPackService} smartNodeHashPackService
-   * @param {SmartNodeRestService} smartNodeRestService
+   * @param {smartNodeHashPackService} SmartNodeHashPackService
    * @param {string} network
    * @returns {SmartNodeHederaService}
    */
   constructor(
     private smartNodeHashPackService: SmartNodeHashPackService,
-    private smartNodeRestService: SmartNodeRestService,
-    @Inject('network') private network: 'mainnet' | 'testnet' | 'local'
+    @Inject('options') private options: {
+      network: 'mainnet' | 'testnet' | 'local' | 'custom'
+    }    
   ) { }
 
   /**
@@ -52,13 +51,14 @@ export class SmartNodeHederaService {
   getRandomNodeForNetwork(): AccountId {
     let nodeAccountId = 0;
 
-    switch (this.network) {
+    switch (this.options.network) {
       case 'mainnet':
         // generating random number from 3 to 28...
         nodeAccountId = Math.floor(Math.random() * (28 - 3 + 1) + 3);
         break;
       case 'testnet':
       case 'local':
+      case 'custom':
         // generating random number from 3 to 9...
         nodeAccountId = Math.floor(Math.random() * (9 - 3 + 1) + 3);
         break;

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { SmartNodeHashPackModule } from '../hashpack/smart-node-hashpack.module';
 import { SmartNodeRestModule } from '../rest/smart-node-rest.module';
 import { SmartNodeHederaService } from './smart-node-hedera.service';
@@ -8,9 +8,19 @@ import { SmartNodeHederaService } from './smart-node-hedera.service';
     SmartNodeHashPackModule,
     SmartNodeRestModule
   ],
-  providers: [
-    SmartNodeHederaService
-  ],
   exports: [],
 })
-export class SmartNodeHederaModule { }
+export class SmartNodeHederaModule {
+  static forRoot(options: any): ModuleWithProviders<SmartNodeHederaModule> {
+    return {
+      ngModule: SmartNodeHederaModule,
+      providers: [
+        {
+          provide: 'options',
+          useValue: options,
+        },
+        SmartNodeHederaService
+      ]
+    }
+  }
+}
