@@ -1,6 +1,6 @@
 {
   "name": "@hsuite/angular-sdk",
-  "version": "1.4.0",
+  "version": "1.8.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HbarSuite/angular-sdk.git"
@@ -27,12 +27,15 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
+    "socket.io-parser": "^4.2.4",
     "@capacitor/preferences": "^5.0.6",
-    "@hashgraph/sdk": "^2.35.0",
+    "@hashgraph/sdk": "^2.37.0",
     "@types/lodash": "^4.14.184",
-    "axios": "^0.27.2",
+    "axios": "^1.6.1",
+    "crypto-es": "^2.1.0",
     "decimal.js": "^10.4.0",
     "hashconnect": "^0.2.4",
-    "ngx-socket-io": "^4.3.0"
+    "ngx-socket-io": "^4.6.1",
+    "yarn-audit-fix": "^10.0.4"
   }
 }
